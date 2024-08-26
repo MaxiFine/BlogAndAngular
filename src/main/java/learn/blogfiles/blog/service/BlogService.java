@@ -17,4 +17,6 @@ public interface BlogService {
 
     BlogDtoResponse updateBlog(BlogDto dto, String blogId);
 
+    void likePost(String postId);
+
 }

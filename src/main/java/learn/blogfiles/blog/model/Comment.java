@@ -16,7 +16,7 @@ public class Comment {
 
     @Id
     @GeneratedValue
-    private Long commentId;
+    private String commentId;
 
     private String commentText;
     private LocalDate createdAt;

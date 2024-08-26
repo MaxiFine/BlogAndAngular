@@ -2,6 +2,7 @@ package learn.blogfiles.blog.controller;
 
 import learn.blogfiles.blog.dtos.BlogDto;
 import learn.blogfiles.blog.dtos.BlogDtoResponse;
+import learn.blogfiles.blog.handlers.NotFound404Exception;
 import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +41,16 @@ public class BlogController {
         BlogDtoResponse newUpdate = blogService.updateBlog(dto, blogId);
         return new ResponseEntity<>(newUpdate, HttpStatus.OK);
     }
+
+    @PatchMapping("/like/{postId}")
+    public ResponseEntity<String> likePost(@PathVariable String postId) {
+        try {
+            blogService.likePost(postId);
+            System.out.println(postId);
+            return ResponseEntity.ok("Post liked successfully.");
+        } catch (NotFound404Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
 }
+

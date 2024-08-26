@@ -1,8 +1,9 @@
 package learn.blogfiles.blog.service;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import learn.blogfiles.blog.dtos.BlogDto;
 import learn.blogfiles.blog.dtos.BlogDtoResponse;
+import learn.blogfiles.blog.handlers.NotFound404Exception;
 import learn.blogfiles.blog.mappers.BlogMapper;
 import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.repository.BlogRepository;
@@ -44,10 +45,10 @@ public class BlogServiceImpl implements BlogService{
     public BlogDtoResponse getBlogDetails(String blogId) {
         Optional<BlogEntity> optionalBlog = blogRepository.findById(blogId);
         if (optionalBlog.isEmpty()) {
-            throw new EntityNotFoundException("The blogId does not exists");
+            throw new NotFound404Exception("The blogId does not exists");
         }else {
             BlogEntity blog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new EntityNotFoundException("The blogId does not exists"));
+                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
             return blogMapper.mapBlogDtoResponse(blog);
         }
     }
@@ -55,7 +56,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public BlogDtoResponse updateBlog(BlogDto dto, String blogId) {
         BlogEntity optionalBlog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new EntityNotFoundException("The blogId does not exists"));
+                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
         return updaterBlog(dto, optionalBlog);
     }
 
@@ -66,5 +67,14 @@ public class BlogServiceImpl implements BlogService{
         blog.setBlogTags(blogDto.blogTags());
        BlogEntity updatedBlog = blogRepository.save(blog);
         return blogMapper.mapBlogDtoResponse(updatedBlog);
+    }
+
+    @Override
+    public void likePost(String postId) {
+        BlogEntity blog = blogRepository.findById(postId).orElseThrow(
+                () -> new NotFound404Exception("The blog with ID " + postId + " was not found."));
+        blog.setLikeCounts(blog.getLikeCounts() + 1);
+        System.out.println(blog.getLikeCounts());
+        blogRepository.save(blog);
     }
 }
