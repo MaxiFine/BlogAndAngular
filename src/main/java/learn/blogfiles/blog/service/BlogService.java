@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BlogService {
 
-    BlogDtoResponse createBlog(BlogDto blogDto);
+    String createBlog(BlogDto blogDto);
 
     Page<BlogDtoResponse> getAllBlogs(Pageable pageable);
 

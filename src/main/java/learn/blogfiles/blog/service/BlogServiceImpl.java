@@ -24,11 +24,11 @@ public class BlogServiceImpl implements BlogService{
 
 
     @Override
-    public BlogDtoResponse createBlog(BlogDto blogDto) {
+    public String createBlog(BlogDto blogDto) {
       BlogEntity blog = blogMapper.mapToBlogEntity(blogDto);
-      BlogDtoResponse response = blogMapper.mapBlogDtoResponse(blog);
+//      BlogDtoResponse response = blogMapper.mapBlogDtoResponse(blog);
        blogRepository.save(blog);
-       return response;
+       return "Blog created Successfully... id is: " + blog.getBlogId();
     }
 
     @Override

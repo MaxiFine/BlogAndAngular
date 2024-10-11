@@ -22,7 +22,7 @@ public class BlogController {
 
 
     @PostMapping("/post")
-    public ResponseEntity<BlogDtoResponse> create(@RequestBody BlogDto blog){
+    public ResponseEntity<String> create(@RequestBody BlogDto blog){
         return new ResponseEntity<>(blogService.createBlog(blog), HttpStatus.CREATED.valueOf(201));
     }
 
