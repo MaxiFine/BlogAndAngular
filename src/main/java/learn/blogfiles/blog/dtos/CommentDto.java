@@ -1,4 +1,10 @@
 package learn.blogfiles.blog.dtos;
 
-public class CommentDto {
-}
+import java.time.LocalDate;
+
+public record CommentDto(
+
+        String commentText,
+        LocalDate createdAt,
+        String postedBy
+) {}

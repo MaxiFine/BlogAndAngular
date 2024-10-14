@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Comment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String commentId;
 
     private String commentText;

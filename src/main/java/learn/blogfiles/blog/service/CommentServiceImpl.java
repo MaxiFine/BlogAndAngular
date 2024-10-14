@@ -1,7 +1,9 @@
 package learn.blogfiles.blog.service;
 
 import learn.blogfiles.blog.dtos.CommentDto;
+import learn.blogfiles.blog.dtos.CommentResponse;
 import learn.blogfiles.blog.handlers.NotFound404Exception;
+import learn.blogfiles.blog.mappers.CommentMapper;
 import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.model.Comment;
 import learn.blogfiles.blog.repository.BlogRepository;
@@ -18,17 +20,16 @@ public class CommentServiceImpl implements CommentService{
 
     private final BlogRepository blogRepository;
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
 
     @Override
-    public Comment createComment(String blogId, String postedBy, String content) {
+    public CommentResponse createComment(String blogId, CommentDto commentDto) {
         BlogEntity blog = blogRepository.findById(blogId).orElseThrow(
                 () -> new NotFound404Exception("Blog with ID " + blogId +" does not exist."));
-        Comment comment = new Comment();
-        comment.setBlog(blog);
-        comment.setCommentText(content);
-        comment.setPostedBy(postedBy);
-        comment.setCreatedAt(LocalDate.now());
-        return commentRepository.save(comment);
+        Comment comment = commentMapper.toCommentEntity(commentDto, blog);
+        commentRepository.save(comment);
+        return commentMapper.toCommentResponse(comment);
     }
+
 }
