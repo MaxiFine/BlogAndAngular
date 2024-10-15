@@ -8,7 +8,7 @@ pipeline {
             steps {
                 echo "Cleaning Package"
                 sh '''
-               ls -al
+                mvnw clean package
                 '''
             }
         }
