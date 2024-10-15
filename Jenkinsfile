@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "Cleaning Package"
                 sh '''
-                mvn clean package
+                mvnw clean
                 '''
             }
         }
