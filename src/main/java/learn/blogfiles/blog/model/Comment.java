@@ -1,6 +1,7 @@
 package learn.blogfiles.blog.model;
 
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class Comment {
     private String commentId;
 
     private String commentText;
+    @Nonnull
     private LocalDate createdAt;
     private String postedBy;  // by the user.
 

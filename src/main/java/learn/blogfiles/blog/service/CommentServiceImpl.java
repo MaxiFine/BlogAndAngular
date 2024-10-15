@@ -28,6 +28,7 @@ public class CommentServiceImpl implements CommentService{
         BlogEntity blog = blogRepository.findById(blogId).orElseThrow(
                 () -> new NotFound404Exception("Blog with ID " + blogId +" does not exist."));
         Comment comment = commentMapper.toCommentEntity(commentDto, blog);
+
         commentRepository.save(comment);
         return commentMapper.toCommentResponse(comment);
     }

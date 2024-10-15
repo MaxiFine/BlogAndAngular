@@ -6,6 +6,8 @@ import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.model.Comment;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class CommentMapper {
 
@@ -13,7 +15,7 @@ public class CommentMapper {
         return Comment.builder()
                 .commentText(commentDto.commentText())
                 .postedBy(commentDto.postedBy())
-                .createdAt(commentDto.createdAt())
+                .createdAt(LocalDate.now())
                 .blog(blogEntity)
                 .build();
     }
