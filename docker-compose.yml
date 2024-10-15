@@ -5,42 +5,36 @@ services:
   blog-app:
     image: blog-app:1.5
     working_dir: /app
-#    volumes:
-#      - C:\Users\MaxwellAdomako\IdeaProjects\learnings\blog\target\blog-0.0.1-SNAPSHOT.jar:/app/blog-0.0.1-SNAPSHOT.jar
     ports:
-      - 2020:2020
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/blogs
-#      - SPRING_DATASOURCE_USERNAME=postgres
-#      - SPRING_DATASOURCE_PASSWORD=postgres  // removed because app talks to the pg service
+      - 2025:2025
     env_file:
       - .env
     depends_on:
-      - postgres
+      - postgres_data
     restart: on-failure:1
 
   # Database Service
-  postgres:
+  postgres_data:
     container_name: blog_app_db
-    image: postgres
+    image: postgres:latest
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
       PG_DATA: ${PG_DATA}
       POSTGRES_DB: ${PG_DB}
     volumes:
-      - ${SOURCE_VOLUME}
+      - ${SOURCE_VOLUME}:/var/lib/postgresql/data
     ports:
       - ${DB_PORT}
     networks:
       - ${NETWORK}
-    restart: unless-stopped
+    restart: on-failure:1
 
 networks:
   blog-app-network:
     driver: bridge
 
 volumes:
-  postgres:
+  postgres_data:
     driver: local
 

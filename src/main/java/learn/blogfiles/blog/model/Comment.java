@@ -1,6 +1,7 @@
 package learn.blogfiles.blog.model;
 
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,10 +16,11 @@ import java.time.LocalDate;
 public class Comment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String commentId;
 
     private String commentText;
+    @Nonnull
     private LocalDate createdAt;
     private String postedBy;  // by the user.
 

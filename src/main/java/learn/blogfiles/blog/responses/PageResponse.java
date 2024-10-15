@@ -1,4 +1,4 @@
-package learn.blogfiles.responses;
+package learn.blogfiles.blog.responses;
 
 
 import lombok.Builder;
