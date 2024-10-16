@@ -20,23 +20,18 @@ pipeline {
             steps {
                 echo "Installing Maven version ${MAVEN_VERSION}..."
                 sh '''
-                    // # Download Maven
+                    # Download Maven
                     wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O maven.tar.gz
                 
                     tar -xzf maven.tar.gz
                     
-                 
                     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}
                  
                     rm maven.tar.gz
                     
-                  
                     export PATH=${MAVEN_HOME}/bin:$PATH
                     
-                   
                     mvn --version
-
-                   
                 '''
             }
         }
