@@ -1,25 +1,30 @@
 pipeline {
      agent any
+     tools {
+          jdk 'jdk21'
+          maven 'maven'
+     }
      triggers {
         pollSCM('* * * * *')
     }
+      // stage('Test') {
+      //       steps {
+      //           echo "Testing.."
+      //           sh '''
+      //           chmod 
+      //           '''
+      //       }
+      //   }
     stages {
         stage('clean') {
             steps {
                 echo "Cleaning Package"
                 sh '''
-                 ./mvnw clean
+                 mvn clean compile -DskipTests=true
                 '''
             }
         }
-        stage('Test') {
-            steps {
-                echo "Testing.."
-                sh '''
-                echo "Testing"
-                '''
-            }
-        }
+       
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
