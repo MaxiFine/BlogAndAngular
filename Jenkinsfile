@@ -20,23 +20,42 @@ pipeline {
             steps {
                 echo "Installing Maven version ${MAVEN_VERSION}..."
                 sh '''
-                    # Download Maven
-                    wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O maven.tar.gz
+                    // # Download Maven
+                    // wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O maven.tar.gz
                     
-                    # Extract Maven
-                    tar -xzf maven.tar.gz
+                    // # Extract Maven
+                    // tar -xzf maven.tar.gz
                     
-                    # Move Maven to a workspace folder
-                    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}
+                    // # Move Maven to a workspace folder
+                    // mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}
                     
-                    # Clean up the tar file
-                    rm maven.tar.gz
+                    // # Clean up the tar file
+                    // rm maven.tar.gz
                     
-                    # Set Maven executable path
-                    export PATH=${MAVEN_HOME}/bin:$PATH
+                    // # Set Maven executable path
+                    // export PATH=${MAVEN_HOME}/bin:$PATH
                     
-                    # Check Maven version
-                    mvn --version
+                    // # Check Maven version
+                    // mvn --version
+
+                    # Download Maven using curl
+            curl -o maven.tar.gz https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+            
+            # Extract Maven
+            tar -xzf maven.tar.gz
+            
+            # Move Maven to a workspace folder
+            mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}
+            
+            # Clean up the tar file
+            rm maven.tar.gz
+            
+            # Set Maven executable path
+            export PATH=${MAVEN_HOME}/bin:$PATH
+            
+            # Check Maven version
+            mvn --version
+
                 '''
             }
         }
