@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_VERSION = '3.8.6'  // Specify the Maven version to install
+        MAVEN_VERSION = '3.8.8'  // Specify the Maven version to install
         MAVEN_HOME = "${env.WORKSPACE}/maven"  // Define where Maven will be installed
     }
 
