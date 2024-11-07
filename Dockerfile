@@ -28,7 +28,7 @@
 FROM maven:3.9.6 AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests=true
+RUN mvn clean package -DskipTests=false
 
 
 FROM openjdk:24-ea-17-jdk-oracle

@@ -1,0 +1,632 @@
+Resources:
+  MxVPCD3A7EA23:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/Resource
+  MxVPCPublicSubnetSubnet1Subnet77900090:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.0.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: PublicSubnet
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet1
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/Subnet
+  MxVPCPublicSubnetSubnet1RouteTableAFDD705F:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet1
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/RouteTable
+  MxVPCPublicSubnetSubnet1RouteTableAssociation0843F76D:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: MxVPCPublicSubnetSubnet1RouteTableAFDD705F
+      SubnetId:
+        Ref: MxVPCPublicSubnetSubnet1Subnet77900090
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/RouteTableAssociation
+  MxVPCPublicSubnetSubnet1DefaultRoute2AF809F7:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: MxVPCIGWE06A8395
+      RouteTableId:
+        Ref: MxVPCPublicSubnetSubnet1RouteTableAFDD705F
+    DependsOn:
+      - MxVPCVPCGWF770844E
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/DefaultRoute
+  MxVPCPublicSubnetSubnet1EIP4AAD990F:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet1
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/EIP
+  MxVPCPublicSubnetSubnet1NATGatewayCDCD9EC8:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - MxVPCPublicSubnetSubnet1EIP4AAD990F
+          - AllocationId
+      SubnetId:
+        Ref: MxVPCPublicSubnetSubnet1Subnet77900090
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet1
+    DependsOn:
+      - MxVPCPublicSubnetSubnet1DefaultRoute2AF809F7
+      - MxVPCPublicSubnetSubnet1RouteTableAssociation0843F76D
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet1/NATGateway
+  MxVPCPublicSubnetSubnet2Subnet36E4B364:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: PublicSubnet
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet2
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/Subnet
+  MxVPCPublicSubnetSubnet2RouteTable32EDCB7A:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet2
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/RouteTable
+  MxVPCPublicSubnetSubnet2RouteTableAssociation16D71E29:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: MxVPCPublicSubnetSubnet2RouteTable32EDCB7A
+      SubnetId:
+        Ref: MxVPCPublicSubnetSubnet2Subnet36E4B364
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/RouteTableAssociation
+  MxVPCPublicSubnetSubnet2DefaultRoute93089A2A:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: MxVPCIGWE06A8395
+      RouteTableId:
+        Ref: MxVPCPublicSubnetSubnet2RouteTable32EDCB7A
+    DependsOn:
+      - MxVPCVPCGWF770844E
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/DefaultRoute
+  MxVPCPublicSubnetSubnet2EIPA6DF9D2D:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet2
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/EIP
+  MxVPCPublicSubnetSubnet2NATGatewayD299807A:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - MxVPCPublicSubnetSubnet2EIPA6DF9D2D
+          - AllocationId
+      SubnetId:
+        Ref: MxVPCPublicSubnetSubnet2Subnet36E4B364
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PublicSubnetSubnet2
+    DependsOn:
+      - MxVPCPublicSubnetSubnet2DefaultRoute93089A2A
+      - MxVPCPublicSubnetSubnet2RouteTableAssociation16D71E29
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PublicSubnetSubnet2/NATGateway
+  MxVPCPrivateSubnetSubnet1Subnet5F7C8381:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: PrivateSubnet
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1/Subnet
+  MxVPCPrivateSubnetSubnet1RouteTableED8369EF:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1/RouteTable
+  MxVPCPrivateSubnetSubnet1RouteTableAssociationF8CED4F4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: MxVPCPrivateSubnetSubnet1RouteTableED8369EF
+      SubnetId:
+        Ref: MxVPCPrivateSubnetSubnet1Subnet5F7C8381
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1/RouteTableAssociation
+  MxVPCPrivateSubnetSubnet1DefaultRouteE1CED13C:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: MxVPCPublicSubnetSubnet1NATGatewayCDCD9EC8
+      RouteTableId:
+        Ref: MxVPCPrivateSubnetSubnet1RouteTableED8369EF
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet1/DefaultRoute
+  MxVPCPrivateSubnetSubnet2Subnet6E5B50C3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.3.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: PrivateSubnet
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2/Subnet
+  MxVPCPrivateSubnetSubnet2RouteTable2A9BD7D8:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2/RouteTable
+  MxVPCPrivateSubnetSubnet2RouteTableAssociation00CA0F0F:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: MxVPCPrivateSubnetSubnet2RouteTable2A9BD7D8
+      SubnetId:
+        Ref: MxVPCPrivateSubnetSubnet2Subnet6E5B50C3
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2/RouteTableAssociation
+  MxVPCPrivateSubnetSubnet2DefaultRouteA7808698:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: MxVPCPublicSubnetSubnet2NATGatewayD299807A
+      RouteTableId:
+        Ref: MxVPCPrivateSubnetSubnet2RouteTable2A9BD7D8
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/PrivateSubnetSubnet2/DefaultRoute
+  MxVPCIGWE06A8395:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxVPC
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/IGW
+  MxVPCVPCGWF770844E:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: MxVPCIGWE06A8395
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/VPCGW
+  MxVPCRestrictDefaultSecurityGroupCustomResourceC4D37DAF:
+    Type: Custom::VpcRestrictDefaultSG
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E
+          - Arn
+      DefaultSecurityGroupId:
+        Fn::GetAtt:
+          - MxVPCD3A7EA23
+          - DefaultSecurityGroup
+      Account:
+        Ref: AWS::AccountId
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxVPC/RestrictDefaultSecurityGroupCustomResource/Default
+  CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: Inline
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:AuthorizeSecurityGroupEgress
+                  - ec2:RevokeSecurityGroupIngress
+                  - ec2:RevokeSecurityGroupEgress
+                Resource:
+                  - Fn::Join:
+                      - ""
+                      - - "arn:"
+                        - Ref: AWS::Partition
+                        - ":ec2:"
+                        - Ref: AWS::Region
+                        - ":"
+                        - Ref: AWS::AccountId
+                        - :security-group/
+                        - Fn::GetAtt:
+                            - MxVPCD3A7EA23
+                            - DefaultSecurityGroup
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role
+  CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: ee7de53d64cc9d6248fa6aa550f92358f6c907b5efd6f3298aeab1b5e7ea358a.zip
+      Timeout: 900
+      MemorySize: 128
+      Handler: __entrypoint__.handler
+      Role:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+          - Arn
+      Runtime:
+        Fn::FindInMap:
+          - LatestNodeRuntimeMap
+          - Ref: AWS::Region
+          - value
+      Description: Lambda function for removing all inbound/outbound rules from the VPC default security group
+    DependsOn:
+      - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler
+      aws:asset:path: asset.ee7de53d64cc9d6248fa6aa550f92358f6c907b5efd6f3298aeab1b5e7ea358a
+      aws:asset:property: Code
+  MxBucketCC038E16:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxBucket/Resource
+  SecurityGroupDD263621:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow ssh and http
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow HTTP access
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+        - CidrIp: 0.0.0.0/0
+          Description: Allow SSH access
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+      VpcId:
+        Ref: MxVPCD3A7EA23
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/SecurityGroup/Resource
+  MxInstanceInstanceRole77814F30:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: "2012-10-17"
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxInstance
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxInstance/InstanceRole/Resource
+  MxInstanceInstanceProfileB77601D6:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: MxInstanceInstanceRole77814F30
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxInstance/InstanceProfile
+  MxInstanceCB393B98:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      IamInstanceProfile:
+        Ref: MxInstanceInstanceProfileB77601D6
+      ImageId:
+        Ref: SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - Fn::GetAtt:
+            - SecurityGroupDD263621
+            - GroupId
+      SubnetId:
+        Ref: MxVPCPublicSubnetSubnet1Subnet77900090
+      Tags:
+        - Key: Name
+          Value: MxLabCdkStack/MxInstance
+      UserData:
+        Fn::Base64: "#!/bin/bash"
+    DependsOn:
+      - MxInstanceInstanceRole77814F30
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/MxInstance/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/11Qy27CMBD8Fu7G5aH2DqhCHNpaScW12pgNLCTryF6DUJR/r4ILaXuah8bjsWd6+vKsJyO4hLHdncYVFbrNBexJwSV8tWhnut02Vq1K3pqVMrGoyOaxYJTeG1jmouAnFBUO/uAtQnCWQMjxI9yT143p4R1kDYIXuCrj6QyCQ/GGBT3jI5CW/KiFCNhDjSwqRxs9yXXtXWxuG/4YGw4CbDFVJt6pMNftMtpTuiqxThHUus1cesod74eMdyVV2HUqw+Ci7ytjEFcPsuTf/A2ahnj/L2W8O9MO/RICqkUIKLnA/pYr2YCHGgV9Lz6iNPG2b+V4R/0fdspc5eD4aa6nMz0ZHQPR2EcWqlFnCb8Bk9GgstsBAAA=
+    Metadata:
+      aws:cdk:path: MxLabCdkStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Mappings:
+  LatestNodeRuntimeMap:
+    af-south-1:
+      value: nodejs20.x
+    ap-east-1:
+      value: nodejs20.x
+    ap-northeast-1:
+      value: nodejs20.x
+    ap-northeast-2:
+      value: nodejs20.x
+    ap-northeast-3:
+      value: nodejs20.x
+    ap-south-1:
+      value: nodejs20.x
+    ap-south-2:
+      value: nodejs20.x
+    ap-southeast-1:
+      value: nodejs20.x
+    ap-southeast-2:
+      value: nodejs20.x
+    ap-southeast-3:
+      value: nodejs20.x
+    ap-southeast-4:
+      value: nodejs20.x
+    ap-southeast-5:
+      value: nodejs20.x
+    ap-southeast-7:
+      value: nodejs20.x
+    ca-central-1:
+      value: nodejs20.x
+    ca-west-1:
+      value: nodejs20.x
+    cn-north-1:
+      value: nodejs18.x
+    cn-northwest-1:
+      value: nodejs18.x
+    eu-central-1:
+      value: nodejs20.x
+    eu-central-2:
+      value: nodejs20.x
+    eu-north-1:
+      value: nodejs20.x
+    eu-south-1:
+      value: nodejs20.x
+    eu-south-2:
+      value: nodejs20.x
+    eu-west-1:
+      value: nodejs20.x
+    eu-west-2:
+      value: nodejs20.x
+    eu-west-3:
+      value: nodejs20.x
+    il-central-1:
+      value: nodejs20.x
+    me-central-1:
+      value: nodejs20.x
+    me-south-1:
+      value: nodejs20.x
+    mx-central-1:
+      value: nodejs20.x
+    sa-east-1:
+      value: nodejs20.x
+    us-east-1:
+      value: nodejs20.x
+    us-east-2:
+      value: nodejs20.x
+    us-west-1:
+      value: nodejs20.x
+    us-west-2:
+      value: nodejs20.x
+Parameters:
+  SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Outputs:
+  BucketName:
+    Value:
+      Ref: MxBucketCC038E16
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-3
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-4
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - il-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+      - Fn::Equals:
+          - Ref: AWS::Region
+          - us-west-2
