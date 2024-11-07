@@ -3,10 +3,11 @@ services:
 
   # Spring boot application Service
   blog-app:
-    image: blog-app:1.5
+#    image: blog-app:1.5 changed to 2.0
+    image: blog-app/redo:2.0
     working_dir: /app
     ports:
-      - 2025:2025
+      - 8027:8027
     env_file:
       - .env
     depends_on:
