@@ -4,7 +4,7 @@ services:
   # Spring boot application Service
   blog-app:
 #    image: blog-app:1.5 changed to 2.0
-    image: blog-app/redo:2.0
+    image: blog-app:1.5
     working_dir: /app
     ports:
       - 8027:8027
