@@ -1,89 +1,40 @@
 pipeline {
-    agent {
-        node {
-            label 'agentTwo'
-        }
-    }
-
-//     triggers {
-//         pollSCM('* * * * *')  // Poll SCM every minute
-//     }
-
-    environment {
-        MAVEN_VERSION = '3.8.8'  // Specify the Maven version to install
-        MAVEN_HOME = "${env.WORKSPACE}/maven"  // Define where Maven will be installed
+    agent any
+    tools {
+        jdk 'jdk21'         // Use the JDK version you configured in Jenkins
+        maven 'maven'       // Ensure 'maven' is the name of your Maven installation in Jenkins
     }
 
     stages {
-
-        stage('Install Maven') {
+        stage('Build') {
             steps {
-                echo "Installing Maven version ${MAVEN_VERSION}..."
-                sh '''
-                    # Download Maven
-                    wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O maven.tar.gz
-                
-                    tar -xzf maven.tar.gz
-                    
-                    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}
-                 
-                    rm maven.tar.gz
-                    
-                    export PATH=${MAVEN_HOME}/bin:$PATH
-                    
-                    mvn --version
-                '''
-            }
-        }
+                // Checkout code
+                git branch: 'main', url: 'https://github.com/YourRepo/YourSpringBootApp.git', credentialsId: 'your-credential-id'
 
-        stage('Clean') {
-            steps {
-                echo "Cleaning and compiling the project..."
-                sh '''
-                    # Ensure Maven binary is in the PATH
-                    export PATH=${MAVEN_HOME}/bin:$PATH
-                    
-                    # Run Maven clean and compile, skipping tests
-                    mvn clean compile -DskipTests=true
-                '''
+                // Compile the code
+                sh 'mvn clean compile -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running tests..."
-                sh '''
-                    # Ensure Maven binary is in the PATH
-                    export PATH=${MAVEN_HOME}/bin:$PATH
-                    
-                    # Run Maven tests
-                    mvn test
-                '''
-            }
-        }
-
-        stage('Deliver') {
-            steps {
-                echo "Delivering application..."
-                sh '''
-                    echo "Delivery process placeholder."
-                '''
+                // Run tests
+                sh 'mvn test'
             }
         }
     }
 
     post {
         always {
-            echo "Pipeline complete."
+            // Archive test results if needed
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            junit '**/target/surefire-reports/*.xml'
         }
-
         success {
-            echo "Build and delivery successful!"
+            echo 'Build and tests succeeded!'
         }
-
         failure {
-            echo "Build failed."
+            echo 'Build or tests failed.'
         }
     }
 }
-
