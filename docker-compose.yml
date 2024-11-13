@@ -50,11 +50,13 @@
 services:
   # Spring boot application Service
   blog-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: blog-dockerized-2
-    working_dir: /app
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: blog-dockerized-2
+#    working_dir: /app
+#    TESTING PULL IMAGE
+    image: maxfine22/blog-app:2.5
     restart: on-failure:1
     ports:
       - 8027:8027
