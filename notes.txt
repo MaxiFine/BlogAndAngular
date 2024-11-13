@@ -1,0 +1,4 @@
+scp -i blog-app-kp.pem /mnt/c/Users/MaxwellAdomako
+
+THIS CMD enabled me to upload the env file to the ec2 home user path
+scp -i blog-app-kp.pem /mnt/c/Users/MaxwellAdomako/IdeaProjects/learnings/blog/.env ec2-user@18.175.237.135:/home/ec2-user/

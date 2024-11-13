@@ -5,9 +5,9 @@ pipeline {
         }
     }
 
-    triggers {
-        pollSCM('* * * * *')  // Poll SCM every minute
-    }
+//     triggers {
+//         pollSCM('* * * * *')  // Poll SCM every minute
+//     }
 
     environment {
         MAVEN_VERSION = '3.8.8'  // Specify the Maven version to install
@@ -86,3 +86,4 @@ pipeline {
         }
     }
 }
+
