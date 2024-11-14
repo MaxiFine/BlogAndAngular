@@ -1,13 +1,3 @@
-#FROM maven:3.9.6 AS build
-#WORKDIR /app
-#COPY . .
-#COPY .env .
-#RUN mvn package -DskipTests
-#FROM openjdk:17-bullseye
-#WORKDIR /app
-#COPY ../target/blog-0.0.1-SNAPSHOT.jar /app
-#EXPOSE 2020
-#CMD ["java", "-jar", "blog-0.0.1-SNAPSHOT.jar"]
 
 # USING ALIBOU'S CONFIGS
 #STAGE 1
