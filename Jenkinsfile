@@ -38,3 +38,40 @@ pipeline {
         }
     }
 }
+
+
+pipeline {
+    agent {
+        node {
+            label 'dev'
+        }
+    }
+
+    stages {
+        stage("Code") {
+            steps {
+                git url: "https://github.com/pankajpc15/banking-service-app.git", branch: "master"
+            }
+        }
+        stage("Build") {
+            steps {
+                sh "whoami"
+                sh "docker build -t banking-service-api:jenkins ."
+            }
+        }
+        stage("Docker push") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) {
+                    sh "docker image tag banking-service-api:jenkins $DockerUsername/banking-service-api:jenkins"
+                    sh "docker login -u $DockerUsername -p $DockerPassword"
+                    sh "docker push $DockerUsername/banking-service-api:jenkins"
+                }
+            }
+        }
+        stage("Docker Compose") {
+            steps {
+                sh "docker compose down && docker compose up -d"
+            }
+        }
+    }
+}
