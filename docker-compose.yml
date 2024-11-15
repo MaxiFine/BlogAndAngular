@@ -1,69 +1,45 @@
 #
-#services:
-#
-#  # Spring boot application Service
-#  blog-app:
-##    image: blog-app:1.5 changed to 2.0
-##    image: blog-app:1.5
-##    image: maxfine22/blog-app:latest
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: blog-dockerized-2
-#    working_dir: /app
-#    restart: on-failure:1
-#    ports:
-#      - 8027:8027
-#    env_file:
-#      - .env
-##    depends_on:
-##      - postgres_data
-##    restart: on-failure:1
-#
-#  # Database Service
-##  postgres_data:
-##    container_name: blog_app_db
-##    image: postgres:latest
-##    environment:
-##      POSTGRES_USER: ${PG_USER}
-##      POSTGRES_PASSWORD: ${PG_PASS}
-##      PG_DATA: ${PG_DATA}
-##      POSTGRES_DB: ${PG_DB}
-##    volumes:
-##      - ${SOURCE_VOLUME}:/var/lib/postgresql/data
-##    ports:
-##      - ${DB_PORT}
-##    networks:
-##      - ${NETWORK}
-##    restart: on-failure:1
-#
-#networks:
-#  blog-app-network:
-#    driver: bridge
-#
-#volumes:
-#  postgres_data:
-#    driver: local
-#
-
-
 services:
+
+  #   Database Service
+  postgres_data:
+    container_name: blog_app_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      PG_DATA: ${PG_DATA}
+      POSTGRES_DB: ${PG_DB}
+    volumes:
+      - ${SOURCE_VOLUME}:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}
+    networks:
+      - ${NETWORK}
+    restart: on-failure
+
+
   # Spring boot application Service
   blog-app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: blog-dockerized-2
-#    working_dir: /app
-#    TESTING PULL IMAGE
-    image: maxfine22/blog-app:2.5
-    restart: on-failure:1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: compose-building
+    image: two-stage-image
+    environment:
+       DATABASE_URL: ${SPRING_DATASOURCE_URL}
+       DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+       DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
-      - 8027:8027
-#    env_file:
-#      - .env
+      - 6060:6060
+    env_file:
+      - .env
+    depends_on:
+      - postgres_data
+    restart: on-failure
     networks:
       - blog-app-network
+
 
 networks:
   blog-app-network:
@@ -72,3 +48,31 @@ networks:
 volumes:
   postgres_data:
     driver: local
+
+
+
+#services:
+#  # Spring boot application Service
+#  blog-app:
+##    build:
+##      context: .
+##      dockerfile: Dockerfile
+##    container_name: blog-dockerized-2
+##    working_dir: /app
+##    TESTING PULL IMAGE
+#    image: maxfine22/blog-app:2.5
+#    restart: on-failure:1
+#    ports:
+#      - 8027:8027
+##    env_file:
+##      - .env
+#    networks:
+#      - blog-app-network
+#
+#networks:
+#  blog-app-network:
+#    driver: bridge
+#
+#volumes:
+#  postgres_data:
+#    driver: local
