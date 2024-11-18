@@ -19,4 +19,6 @@ public interface BlogService {
 
     void likePost(String postId);
 
+    BlogDtoResponse getBlogNameContent(String name);
+
 }
