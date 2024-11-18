@@ -36,6 +36,12 @@ public class BlogController {
         return new ResponseEntity<>(blogService.getBlogDetails(blogId), HttpStatusCode.valueOf(200));
     }
 
+    @GetMapping("/find-name")
+    public ResponseEntity<BlogDtoResponse> getByNameContentController(@RequestParam String name){
+        return new ResponseEntity<>(blogService.getBlogNameContent(name), HttpStatusCode.valueOf(200));
+    }
+
+
     @PutMapping("/update-blog/{blogId}")
     public ResponseEntity<BlogDtoResponse> updateController(@RequestBody BlogDto dto, @PathVariable String blogId){
         BlogDtoResponse newUpdate = blogService.updateBlog(dto, blogId);

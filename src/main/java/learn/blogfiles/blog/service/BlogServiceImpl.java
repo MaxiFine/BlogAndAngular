@@ -22,7 +22,6 @@ public class BlogServiceImpl implements BlogService{
     private final BlogMapper blogMapper;
 
 
-
     @Override
     public String createBlog(BlogDto blogDto) {
       BlogEntity blog = blogMapper.mapToBlogEntity(blogDto);
@@ -30,6 +29,7 @@ public class BlogServiceImpl implements BlogService{
        blogRepository.save(blog);
        return "Blog created Successfully... id is: " + blog.getBlogId();
     }
+
 
     @Override
     public Page<BlogDtoResponse> getAllBlogs(Pageable pageable) {
@@ -53,12 +53,27 @@ public class BlogServiceImpl implements BlogService{
         }
     }
 
+
+    @Override
+    public BlogDtoResponse getBlogNameContent(String name) {
+        Optional<BlogEntity> optionalBlog = Optional.ofNullable(blogRepository.byName(name));
+        if (optionalBlog.isEmpty()) {
+            throw new NotFound404Exception("The blogId does not exists");
+        }else {
+            BlogEntity blog = blogRepository.byName(name);
+//                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
+            return blogMapper.mapBlogDtoResponse(blog);
+        }
+    }
+
+
     @Override
     public BlogDtoResponse updateBlog(BlogDto dto, String blogId) {
         BlogEntity optionalBlog = blogRepository.findById(blogId)
                     .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
         return updaterBlog(dto, optionalBlog);
     }
+
 
     private BlogDtoResponse updaterBlog(BlogDto blogDto, BlogEntity blog){
         blog.setName(blogDto.name());
@@ -68,6 +83,7 @@ public class BlogServiceImpl implements BlogService{
        BlogEntity updatedBlog = blogRepository.save(blog);
         return blogMapper.mapBlogDtoResponse(updatedBlog);
     }
+
 
     @Override
     public void likePost(String postId) {
