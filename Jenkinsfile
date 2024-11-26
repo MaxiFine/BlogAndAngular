@@ -1,76 +1,154 @@
+// pipeline {
+//     agent any
+//     tools {
+//         jdk 'jdk'         // Use the JDK version you configured in Jenkins
+//         maven 'maven'       // Ensure 'maven' is the name of your Maven installation in Jenkins
+//     }
+//
+//     stages {
+//         stage('Build') {
+//             steps {
+//                 // Checkout code
+//                 git branch: 'main', url: 'https://github.com/YourRepo/YourSpringBootApp.git', credentialsId: 'your-credential-id'
+//
+//                 // Compile the code
+//                 sh 'mvn clean compile -DskipTests'
+//             }
+//         }
+//
+//         stage('Test') {
+//             steps {
+//                 // Run tests
+//                 sh 'mvn test'
+//             }
+//         }
+//     }
+//
+//     post {
+//         always {
+//             // Archive test results if needed
+//             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+//             junit '**/target/surefire-reports/*.xml'
+//         }
+//         success {
+//             echo 'Build and tests succeeded!'
+//         }
+//         failure {
+//             echo 'Build or tests failed.'
+//         }
+//     }
+// }
+//
+//
+// // pipeline {
+// //     agent {
+// //         node {
+// //             label 'dev'
+// //         }
+// //     }
+// //
+// //     stages {
+// //         stage("Code") {
+// //             steps {
+// //                 git url: "https://github.com/pankajpc15/banking-service-app.git", branch: "master"
+// //             }
+// //         }
+// //         stage("Build") {
+// //             steps {
+// //                 sh "whoami"
+// //                 sh "docker build -t banking-service-api:jenkins ."
+// //             }
+// //         }
+// //         stage("Docker push") {
+// //             steps {
+// //                 withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) {
+// //                     sh "docker image tag banking-service-api:jenkins $DockerUsername/banking-service-api:jenkins"
+// //                     sh "docker login -u $DockerUsername -p $DockerPassword"
+// //                     sh "docker push $DockerUsername/banking-service-api:jenkins"
+// //                 }
+// //             }
+// //         }
+// //         stage("Docker Compose") {
+// //             steps {
+// //                 sh "docker compose down && docker compose up -d"
+// //             }
+// //         }
+// //     }
+// // }
+//
+// // stage('Clean Workspace') {
+// //     steps {
+// //         deleteDir() // Deletes all files in the workspace
+// //     }
+// // }
+//
+//  stage('Build Project') {
+//             steps {
+//                 sh 'cd /var/lib/jenkins/workspace/test-docker-pipe/BlogAndAngular'
+//                 sh 'pwd'
+//                 sh 'mvn clean package'
+//             }
+//         }
+
 pipeline {
     agent any
+
     tools {
-        jdk 'jdk21'         // Use the JDK version you configured in Jenkins
-        maven 'maven'       // Ensure 'maven' is the name of your Maven installation in Jenkins
+        maven 'maven3'
+        jdk 'java17'
+    }
+
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        MAVEN_HOME = '/usr/share/maven'
     }
 
     stages {
-        stage('Build') {
-            steps {
-                // Checkout code
-                git branch: 'main', url: 'https://github.com/YourRepo/YourSpringBootApp.git', credentialsId: 'your-credential-id'
 
-                // Compile the code
-                sh 'mvn clean compile -DskipTests'
+         stage('Clean Workspace') {
+            steps {
+                deleteDir()
             }
         }
 
-        stage('Test') {
+        stage('Verify Build Tools') {
             steps {
-                // Run tests
-                sh 'mvn test'
+                sh 'docker --version'
+                sh 'git --version'
+                sh 'java --version'
+                sh 'mvn -v'
+                sh 'jenkins --version'
             }
         }
-    }
 
-    post {
-        always {
-            // Archive test results if needed
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-            junit '**/target/surefire-reports/*.xml'
-        }
-        success {
-            echo 'Build and tests succeeded!'
-        }
-        failure {
-            echo 'Build or tests failed.'
-        }
-    }
-}
-
-
-pipeline {
-    agent {
-        node {
-            label 'dev'
-        }
-    }
-
-    stages {
-        stage("Code") {
+        stage('Checkout Project') {
             steps {
-                git url: "https://github.com/pankajpc15/banking-service-app.git", branch: "master"
+                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
             }
         }
-        stage("Build") {
-            steps {
-                sh "whoami"
-                sh "docker build -t banking-service-api:jenkins ."
-            }
-        }
-        stage("Docker push") {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) {
-                    sh "docker image tag banking-service-api:jenkins $DockerUsername/banking-service-api:jenkins"
-                    sh "docker login -u $DockerUsername -p $DockerPassword"
-                    sh "docker push $DockerUsername/banking-service-api:jenkins"
+
+        // stage('Build Project') {
+        //     steps {
+        //         sh 'cd /var/lib/jenkins/workspace/test-docker-pipe/BlogAndAngular'
+        //         sh 'pwd'
+        //         sh 'mvn clean package'
+        //     }
+        // }
+
+                stage('Build Project') {
+                    steps {
+                        dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
+                            sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
+                            sh 'pwd' // Confirm the current directory
+                            sh 'mvn clean package' // Build the project
                 }
             }
         }
-        stage("Docker Compose") {
+
+
+        stage('Run Project') {
             steps {
-                sh "docker compose down && docker compose up -d"
+                echo "DONE BILDING PROJECT..."
             }
         }
     }
