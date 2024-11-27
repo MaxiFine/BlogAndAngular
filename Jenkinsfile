@@ -70,7 +70,7 @@ pipeline {
                 sh 'git --version'
                 sh 'java --version'
 
-                sh 'jenkins --version'
+
             }
         }
 
