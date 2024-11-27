@@ -89,6 +89,15 @@ pipeline {
         // }
 
                 stage('Build Project') {
+
+                    agent {
+
+                        docker {
+                            image 'maven:3-eclipse-temurin-23-alpine'
+                        }
+
+                    }
+
                     steps {
                         dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
 //                             sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
