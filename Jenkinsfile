@@ -1,3 +1,65 @@
+// pipeline {
+//     agent any
+//
+//     stages {
+//
+//         stage('Clean Workspace') {
+//             steps {
+//                 deleteDir()
+//             }
+//         }
+//
+//         stage('Verify Build Tools') {
+//             steps {
+//                 sh 'docker --version'
+//                 sh 'git --version'
+//                 sh 'java --version'
+//             }
+//         }
+//
+//         stage('Checkout Project') {
+//             steps {
+//                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+//             }
+//         }
+//
+//         stage('Build Project') {
+//             agent {
+//                 docker {
+//                     image 'maven:3-eclipse-temurin-23-alpine'
+//                     // args '-v /var/jenkins_home/.m2:/root/.m2' // Bind writable .m2 directory
+//                     // args '-v $WORKSPACE/.m2:/root/.m2'
+//                     args '--user root -v /var/jenkins_home/.m2:/root/.m2'
+//
+//                 }
+//             }
+//
+//             steps {
+//                 dir('BlogAndAngular') {
+//                     // Check user and set permissions
+//                     sh '''
+//
+//             id
+//             echo "Home Directory:"
+//             echo $HOME
+//             echo "Setting Maven Local Repository to a User-Accessible Path..."
+//             mkdir -p $HOME/.m2/repository
+//             chmod -R 777 $HOME/.m2
+//             mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
+//                     '''
+//                 }
+//             }
+//         }
+//
+//         stage('Run Project') {
+//             steps {
+//                 echo "Project built successfully!"
+//             }
+//         }
+//     }
+// }
+//
+
 pipeline {
     agent any
 
@@ -6,6 +68,7 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 deleteDir()
+                sh 'echo "DONE CLEANING"'
             }
         }
 
@@ -19,6 +82,7 @@ pipeline {
 
         stage('Checkout Project') {
             steps {
+                sh 'rm -rf BlogAndAngular || true'
                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
             }
         }
@@ -27,25 +91,20 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3-eclipse-temurin-23-alpine'
-                    // args '-v /var/jenkins_home/.m2:/root/.m2' // Bind writable .m2 directory
-                    // args '-v $WORKSPACE/.m2:/root/.m2'
                     args '--user root -v /var/jenkins_home/.m2:/root/.m2'
-
                 }
             }
 
             steps {
                 dir('BlogAndAngular') {
-                    // Check user and set permissions
                     sh '''
-
-            id
-            echo "Home Directory:"
-            echo $HOME
-            echo "Setting Maven Local Repository to a User-Accessible Path..."
-            mkdir -p $HOME/.m2/repository
-            chmod -R 777 $HOME/.m2
-            mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
+                        id
+                        echo "Home Directory:"
+                        echo $HOME
+                        echo "Setting Maven Local Repository to a User-Accessible Path..."
+                        mkdir -p $HOME/.m2/repository
+                        chmod -R 777 $HOME/.m2
+                        mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
                     '''
                 }
             }
@@ -58,3 +117,4 @@ pipeline {
         }
     }
 }
+
