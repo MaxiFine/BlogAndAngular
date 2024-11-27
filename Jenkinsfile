@@ -85,7 +85,7 @@ pipeline {
         stage('Checkout Project') {
             steps {
                 // Remove old directory
-                sh 'rm -rf BlogAndAngular || true'
+//                 sh 'rm -rf BlogAndAngular || true'
 
                 // Clone the repository
                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
@@ -104,18 +104,11 @@ pipeline {
                 sh '''
                     echo "Workspace contents:"
                     ls -la
-
                     if [ ! -f "BlogAndAngular/pom.xml" ]; then
                         echo "ERROR: pom.xml is missing in BlogAndAngular"
                         exit 1
                     fi
-
-                    echo "Home Directory:"
-                    echo $HOME
-                    echo "Setting Maven Local Repository to a User-Accessible Path..."
-                    mkdir -p $HOME/.m2/repository
-                    chmod -R 777 $HOME/.m2
-                    mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
+                    mvn clean package
                 '''
             }
         }
