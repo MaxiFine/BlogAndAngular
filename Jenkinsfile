@@ -48,17 +48,82 @@
 //             }
 //         }
 
+// pipeline {
+//     agent any
+//
+// //     environment {
+// //         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+// //         MAVEN_HOME = '/usr/share/maven'
+// //     }
+//
+//     stages {
+//
+//          stage('Clean Workspace') {
+//             steps {
+//                 deleteDir()
+//             }
+//         }
+//
+//         stage('Verify Build Tools') {
+//             steps {
+//                 sh 'docker --version'
+//                 sh 'git --version'
+//                 sh 'java --version'
+//
+//
+//             }
+//         }
+//
+//         stage('Checkout Project') {
+//             steps {
+//                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+//             }
+//         }
+//
+//         // stage('Build Project') {
+//         //     steps {
+//         //         sh 'cd /var/lib/jenkins/workspace/test-docker-pipe/BlogAndAngular'
+//         //         sh 'pwd'
+//         //         sh 'mvn clean package'
+//         //     }
+//         // }
+//
+//                 stage('Build Project') {
+//
+//                     agent {
+//
+//                         docker {
+//                             image 'maven:3-eclipse-temurin-23-alpine'
+//                         }
+//
+//                     }
+//
+//                     steps {
+//                         dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
+// //                             sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
+//                             sh 'pwd' // Confirm the current directory
+//                             sh 'mvn clean package' // Build the project
+//                 }
+//             }
+//         }
+//
+//
+//         stage('Run Project') {
+//             steps {
+//                 echo "DONE BILDING PROJECT..."
+//                 echo "DONE BILDING PROJECT..."
+//             }
+//         }
+//     }
+// }
+
+
 pipeline {
     agent any
 
-//     environment {
-//         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-//         MAVEN_HOME = '/usr/share/maven'
-//     }
-
     stages {
 
-         stage('Clean Workspace') {
+        stage('Clean Workspace') {
             steps {
                 deleteDir()
             }
@@ -69,8 +134,6 @@ pipeline {
                 sh 'docker --version'
                 sh 'git --version'
                 sh 'java --version'
-
-
             }
         }
 
@@ -80,38 +143,25 @@ pipeline {
             }
         }
 
-        // stage('Build Project') {
-        //     steps {
-        //         sh 'cd /var/lib/jenkins/workspace/test-docker-pipe/BlogAndAngular'
-        //         sh 'pwd'
-        //         sh 'mvn clean package'
-        //     }
-        // }
+        stage('Build Project') {
+            agent {
+                docker {
+                    image 'maven:3-eclipse-temurin-23-alpine'
+                    args '-v $HOME/.m2:/root/.m2' // Bind local .m2 directory
+                }
+            }
 
-                stage('Build Project') {
-
-                    agent {
-
-                        docker {
-                            image 'maven:3-eclipse-temurin-23-alpine'
-                        }
-
-                    }
-
-                    steps {
-                        dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
-//                             sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
-                            sh 'pwd' // Confirm the current directory
-                            sh 'mvn clean package' // Build the project
+            steps {
+                dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
+                    sh 'pwd' // Confirm the current directory
+                    sh 'mvn clean package' // Build the project
                 }
             }
         }
 
-
         stage('Run Project') {
             steps {
-                echo "DONE BILDING PROJECT..."
-                echo "DONE BILDING PROJECT..."
+                echo "DONE BUILDING PROJECT..."
             }
         }
     }
