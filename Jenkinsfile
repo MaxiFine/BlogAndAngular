@@ -51,11 +51,6 @@
 pipeline {
     agent any
 
-//     tools {
-//         maven 'maven3'
-//         jdk 'java17'
-//     }
-
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
         MAVEN_HOME = '/usr/share/maven'
@@ -74,7 +69,7 @@ pipeline {
                 sh 'docker --version'
                 sh 'git --version'
                 sh 'java --version'
-                sh 'mvn -v'
+
                 sh 'jenkins --version'
             }
         }
