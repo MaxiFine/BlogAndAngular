@@ -94,12 +94,12 @@ pipeline {
         }
 
         stage('Build Project') {
-            agent {
-                docker {
-                    image 'maxfine22/agentdjnmp' // Use the specified Docker agent
-                    args '--user root' // Run as root if necessary for permissions
-                }
-            }
+//             agent {
+//                 docker {
+//                     image 'maxfine22/agentdjnmp' // Use the specified Docker agent
+//                     args '--user root' // Run as root if necessary for permissions
+//                 }
+//             }
             steps {
                 sh '''
                     echo "Checking project structure..."
@@ -117,12 +117,12 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            agent {
-                docker {
-                    image 'maxfine22/agentdjnmp' // Use the specified Docker agent
-                    args '--user root' // Run as root if necessary for permissions
-                }
-            }
+//             agent {
+//                 docker {
+//                     image 'maxfine22/agentdjnmp' // Use the specified Docker agent
+//                     args '--user root' // Run as root if necessary for permissions
+//                 }
+//             }
             steps {
                 script {
                     // Build the Docker image
@@ -135,12 +135,12 @@ pipeline {
         }
 
         stage('Login to Docker Hub') {
-            agent {
-                docker {
-                    image 'maxfine22/agentdjnmp' // Use the specified Docker agent
-                    args '--user root' // Run as root if necessary for permissions
-                }
-            }
+//             agent {
+//                 docker {
+//                     image 'maxfine22/agentdjnmp' // Use the specified Docker agent
+//                     args '--user root' // Run as root if necessary for permissions
+//                 }
+//             }
             steps {
                 script {
                     // Login to Docker Hub
@@ -152,12 +152,12 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-            agent {
-                docker {
-                    image 'maxfine22/agentdjnmp' // Use the specified Docker agent
-                    args '--user root' // Run as root if necessary for permissions
-                }
-            }
+//             agent {
+//                 docker {
+//                     image 'maxfine22/agentdjnmp' // Use the specified Docker agent
+//                     args '--user root' // Run as root if necessary for permissions
+//                 }
+//             }
             steps {
                 script {
                     // Push the Docker image to Docker Hub
