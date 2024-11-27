@@ -86,7 +86,8 @@ pipeline {
                 sh 'rm -rf BlogAndAngular || true'
 
                 // Clone the repository
-                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git BlogAndAngular'
+                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+                sh dir('BlogAndAngular')
             }
         }
 
