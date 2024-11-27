@@ -60,6 +60,8 @@
 // }
 //
 
+// new fix
+
 pipeline {
     agent any
 
@@ -67,7 +69,7 @@ pipeline {
 
         stage('Clean Workspace') {
             steps {
-
+                deleteDir() // This will clean the workspace
                 sh 'echo "DONE CLEANING"'
             }
         }
@@ -99,25 +101,24 @@ pipeline {
             }
 
             steps {
-                {
-                    sh '''
-                        echo "Workspace contents:"
-                        ls -la
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing in BlogAndAngular"
-                            exit 1
-                        fi
-                        echo "Home Directory:"
-                        echo $HOME
-                        echo "Setting Maven Local Repository to a User-Accessible Path..."
-                        mkdir -p $HOME/.m2/repository
-                        chmod -R 777 $HOME/.m2
-                        mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
-                    '''
-                }
+                sh '''
+                    echo "Workspace contents:"
+                    ls -la
+
+                    if [ ! -f "BlogAndAngular/pom.xml" ]; then
+                        echo "ERROR: pom.xml is missing in BlogAndAngular"
+                        exit 1
+                    fi
+
+                    echo "Home Directory:"
+                    echo $HOME
+                    echo "Setting Maven Local Repository to a User-Accessible Path..."
+                    mkdir -p $HOME/.m2/repository
+                    chmod -R 777 $HOME/.m2
+                    mvn -Dmaven.repo.local=$HOME/.m2/repository clean package
+                '''
             }
         }
-
 
         stage('Run Project') {
             steps {
