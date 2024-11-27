@@ -115,3 +115,15 @@ pipeline {
         }
     }
 }
+
+
+WORKING TYPE TWO WITH SYNTAX ERROR  BUT WITH FIX BELOW
+stages {
+    stage('Build Docker Image') {
+        steps {
+            script {
+                docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+            }
+        }
+    }
+}
