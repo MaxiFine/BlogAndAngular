@@ -1,4 +1,3 @@
-
 // // pipeline {
 // //     agent {
 // //         node {
@@ -52,10 +51,10 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven3'
-        jdk 'java17'
-    }
+//     tools {
+//         maven 'maven3'
+//         jdk 'java17'
+//     }
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
@@ -107,6 +106,7 @@ pipeline {
 
         stage('Run Project') {
             steps {
+                echo "DONE BILDING PROJECT..."
                 echo "DONE BILDING PROJECT..."
             }
         }
