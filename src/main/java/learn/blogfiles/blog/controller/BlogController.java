@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/blog")
-@RequiredArgsConstructor
 public class BlogController {
+
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
+    }
 
     private final BlogService blogService;
 
