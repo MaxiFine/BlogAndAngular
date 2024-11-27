@@ -91,7 +91,7 @@ pipeline {
                 stage('Build Project') {
                     steps {
                         dir('BlogAndAngular') { // Navigate into the BlogAndAngular directory
-                            sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
+//                             sh 'ls -l /var/lib/jenkins/workspace/test-docker-pipe'
                             sh 'pwd' // Confirm the current directory
                             sh 'mvn clean package' // Build the project
                 }
