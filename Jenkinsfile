@@ -90,7 +90,6 @@ pipeline {
             }
         }
 
-
         stage('Build Project') {
             agent {
                 docker {
@@ -102,7 +101,12 @@ pipeline {
             steps {
                 dir('BlogAndAngular') {
                     sh '''
-                        id
+                        echo "Workspace contents:"
+                        ls -la
+                        if [ ! -f "pom.xml" ]; then
+                            echo "ERROR: pom.xml is missing in BlogAndAngular"
+                            exit 1
+                        fi
                         echo "Home Directory:"
                         echo $HOME
                         echo "Setting Maven Local Repository to a User-Accessible Path..."
@@ -113,6 +117,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Run Project') {
             steps {
