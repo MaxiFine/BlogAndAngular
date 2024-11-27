@@ -65,13 +65,26 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}")
+//         stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     docker.build("maxfine22/blog-app:3.5")
+//                 }
+//             }
+//         }
+
+         stage('Build Docker Image') {
+
+                    steps {
+                        script {
+                            // Build the Docker image
+                            sh '''
+                                echo "Building Docker image..."
+                                docker build -t maxfine22/blog-app:4.0 .
+                            '''
+                        }
+                    }
                 }
-            }
-        }
 
         stage('Login to Docker Hub') {
             steps {
