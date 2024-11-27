@@ -1,0 +1,36 @@
+#apiVersion: apps/v1
+#kind: Deployment
+## 1. Metadata of the deployment
+#metadata:
+#  name: mongo-deployment
+#  labels:
+#    app: mongo
+## 2. Specification of the deployment
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: mongodb
+#  template:
+#    metadata:
+#      labels:
+#        app: mongodb
+#    spec:
+#      containers:
+#        - name: mongodb
+#          image: mongo
+#          ports:
+#            - containerPort: 27017
+#          env:
+#            - name: MONGO_INITDB_ROOT_USERNAME
+#              value:
+#            - name: MONGO_INITDB_ROOT_PASSWORD
+#              value:
+#
+## a configuration inside a configuration
+## Connections are established using Selectors and Labels
+## the metadata contains the labels and the specification contains
+## Pods get the label through the template blueprint,
+## and then it is matched by the selector
+#
+## Connection of Service to Deployment is done through the Selector of the label
