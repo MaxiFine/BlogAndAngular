@@ -1,61 +1,3 @@
-// pipeline {
-//     agent any
-//
-//     stages {
-//
-//         stage('Clean Workspace') {
-//             steps {
-//
-//                 echo "Workspace cleaned successfully."
-//             }
-//         }
-//
-//         stage('Verify Build Tools') {
-//             steps {
-//                 // Check if required build tools are installed
-//                 sh 'docker --version'
-//                 sh 'git --version'
-//                 sh 'java --version'
-//             }
-//         }
-//
-//         stage('Checkout Project') {
-//             steps {
-//                 // Clone the project from GitHub
-//                 sh '''
-//                     echo "Cloning repository..."
-//                     git clone https://github.com/MaxiFine/BlogAndAngular.git
-//                 '''
-//             }
-//         }
-//
-//         stage('Build Project') {
-//             steps {
-//                 dir('BlogAndAngular') {
-//                     sh '''
-//                         echo "Checking project structure..."
-//                         ls -la
-//
-//                         if [ ! -f "pom.xml" ]; then
-//                             echo "ERROR: pom.xml is missing in BlogAndAngular"
-//                             exit 1
-//                         fi
-//
-//                         echo "Building the project with Maven..."
-//                         mvn clean package
-//                     '''
-//                 }
-//             }
-//         }
-//
-//         stage('Run Project') {
-//             steps {
-//                 echo "Project built successfully! Ready to deploy or test."
-//             }
-//         }
-//     }
-// }
-
 pipeline {
     agent any
 
@@ -66,9 +8,11 @@ pipeline {
 
     stages {
 
-        stage('Clean Workspace') {
+        stage('Clean Maven') {
             steps {
                 echo "Workspace cleaned successfully."
+                sh 'mvn clean'
+                echo "HAPPY CLEANING>>>>>>>>"
 
             }
         }
@@ -79,7 +23,7 @@ pipeline {
                 sh 'docker --version'
                 sh 'git --version'
                 sh 'java --version'
-                sh 'docker ps'
+                sh 'mvn -v'
             }
         }
 
@@ -94,7 +38,7 @@ pipeline {
         }
 
         stage('Build Project') {
-//
+
             steps {
                 sh '''
                     echo "Checking project structure..."
@@ -112,7 +56,7 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-//
+
             steps {
                 script {
                     // Build the Docker image
@@ -125,7 +69,7 @@ pipeline {
         }
 
         stage('Login to Docker Hub') {
-//
+
             steps {
                 script {
                     // Login to Docker Hub
@@ -156,6 +100,7 @@ pipeline {
                     sh '''
                         echo "Running Docker container..."
                         docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:4.0
+                        echo container now running>>>>>>
                     '''
                 }
             }
