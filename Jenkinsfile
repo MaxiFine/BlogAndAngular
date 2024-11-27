@@ -8,6 +8,21 @@ pipeline {
 
     stages {
 
+        stage('Load Environment Variables from Credentials') {
+                    steps {
+                        withCredentials([file(credentialsId: 'blogEnv', variable: 'ENV_FILE')]) {
+                            sh '''
+                                echo "Loading environment variables from credentials..."
+                                set -a
+                                . $ENV_FILE
+                                set +a
+                                echo "SAMPLE_ENV is $SAMPLE_ENV"
+                            '''
+                        }
+                    }
+                }
+
+
         stage('Clean Workspace') {
             steps {
                 echo "Cleaning up workspace..."
