@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_IMAGE_NAME = 'maxfine22/blog-app:4.0' // Docker Hub image name
+        DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
     }
 
     stages {
@@ -49,11 +49,11 @@ pipeline {
                         ls -la
 
                         if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing"
+                            echo "ERROR: pom.xml is missing>>>>>>>>>>>>>>>>>>>>>"
                             exit 1
                         fi
 
-                        echo "Building the project with Maven..."
+                        echo "Building the project with Maven... TEST Maven>>>>>>>>>>>>>>>>>>>>>>>>>>>"
                         mvn clean package
                     '''
                 }
