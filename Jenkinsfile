@@ -70,7 +70,7 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 echo "Workspace cleaned successfully."
-//                 deleteDir() // Clean the workspace
+                deleteDir() // Clean the workspace
             }
         }
 
