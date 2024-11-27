@@ -26,8 +26,11 @@ pipeline {
         stage('Build Project') {
             agent {
                 docker {
-                    image 'maven:3-eclipse-temurin-23-alpine'
-                    args '-v $WORKSPACE/.m2:/root/.m2' // Bind a writable .m2 directory
+//                     image 'maven:3-eclipse-temurin-23-alpine'
+//                     args '-v $WORKSPACE/.m2:/root/.m2' // Bind a writable .m2 directory
+                      image 'maven:3-eclipse-temurin-23-alpine'
+//                       chmod -R 777 /root/.m2
+                      args '-v /var/jenkins_home/.m2:/root/.m2'
                 }
             }
 
