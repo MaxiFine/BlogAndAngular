@@ -99,7 +99,7 @@ pipeline {
             }
 
             steps {
-                dir('BlogAndAngular') {
+                {
                     sh '''
                         echo "Workspace contents:"
                         ls -la
