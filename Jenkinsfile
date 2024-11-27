@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
+        IMAGE_TAG = "4.0"
     }
 
     stages {
@@ -75,40 +76,69 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image
-                    sh '''
-                        echo "Building Docker image..."
-                        docker build -t maxfine22/blog-app:4.0 .
-                    '''
-                }
-            }
-        }
+//         stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     // Build the Docker image
+//                     sh '''
+//                         echo "Building Docker image..."
+//                         docker build -t maxfine22/blog-app:4.0 .
+//                     '''
+//                 }
+//             }
+//         }
+
+            stages {
+                   stage('Build Docker Image') {
+                       steps {
+                           script {
+                               docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                           }
+                       }
+                   }
+
+//         stage('Login to Docker Hub') {
+//             steps {
+//                 script {
+//                     // Login to Docker Hub
+//                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+//                         echo "Logged in to Docker Hub successfully."
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Login to Docker Hub') {
-            steps {
-                script {
-                    // Login to Docker Hub
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                        echo "Logged in to Docker Hub successfully."
+                    steps {
+                        script {
+                            docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                                echo 'Logged in to Docker Hub'
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    // Push the Docker image to Docker Hub
-                    sh '''
-                        echo "Pushing Docker image to Docker Hub..."
-                        docker push maxfine22/blog-app:4.0
-                    '''
+//         stage('Push Docker Image') {
+//             steps {
+//                 script {
+//                     // Push the Docker image to Docker Hub
+//                     sh '''
+//                         echo "Pushing Docker image to Docker Hub..."
+//                         docker push maxfine22/blog-app:4.0
+//                     '''
+//                 }
+//             }
+//         }
+
+         stage('Push Docker Image') {
+                    steps {
+                        script {
+                            docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                                docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
+                            }
+                        }
+                    }
                 }
-            }
-        }
 
         stage('Run Docker Container') {
             steps {
@@ -124,6 +154,7 @@ pipeline {
                         echo "Running Docker container..."
                         docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:4.0
                     '''
+                     echo "Container 'jenkins-built-container' is up and running."
                 }
             }
         }
@@ -135,4 +166,10 @@ pipeline {
             }
         }
     }
+
+    post {
+            always {
+                echo 'Pipeline finished.'
+            }
+        }
 }
