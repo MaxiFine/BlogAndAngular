@@ -67,7 +67,7 @@ pipeline {
 
         stage('Clean Workspace') {
             steps {
-                deleteDir()
+
                 sh 'echo "DONE CLEANING"'
             }
         }
