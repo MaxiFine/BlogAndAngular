@@ -41,8 +41,7 @@ COPY --from=build /app/target/*.jar app.jar
 # Copy the environment file (if needed by the application)
 COPY --from=build /app/.env ./
 
-# Expose the application port
+
 EXPOSE 8027
 
-# Set the entry point for the container
 CMD ["java", "-jar", "app.jar"]
