@@ -31,9 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
-.env
+
 docker-compose.yml
 Dockerfile
 src/main/resources/application.properties
 src/main/resources/application-dev.properties
 src/main/resources/nginx-deployment-results.yml
+
+.env
+.mvn
+target
