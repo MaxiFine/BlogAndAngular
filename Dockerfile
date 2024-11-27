@@ -21,12 +21,8 @@ FROM maven:3-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 
 # Copy the Maven project files
-COPY pom.xml ./
+COPY . .
 RUN mvn dependency:go-offline
-
-# Copy the source code and environment file
-COPY src ./app
-COPY .env ./app
 
 # Build the application
 RUN mvn clean package -DskipTests
@@ -40,7 +36,6 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Copy the environment file (if needed by the application)
 COPY --from=build /app/.env ./
-
 
 EXPOSE 8027
 
