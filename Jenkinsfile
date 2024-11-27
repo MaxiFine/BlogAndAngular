@@ -51,10 +51,10 @@
 pipeline {
     agent any
 
-    environment {
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        MAVEN_HOME = '/usr/share/maven'
-    }
+//     environment {
+//         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+//         MAVEN_HOME = '/usr/share/maven'
+//     }
 
     stages {
 
