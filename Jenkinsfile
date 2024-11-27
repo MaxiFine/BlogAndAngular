@@ -100,20 +100,18 @@ pipeline {
                 }
             }
             steps {
-                {
-                    sh '''
-                        echo "Checking project structure..."
-                        ls -la
+                sh '''
+                    echo "Checking project structure..."
+                    ls -la
 
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing in BlogAndAngular"
-                            exit 1
-                        fi
+                    if [ ! -f "pom.xml" ]; then
+                        echo "ERROR: pom.xml is missing in BlogAndAngular"
+                        exit 1
+                    fi
 
-                        echo "Building the project with Maven..."
-                        mvn clean package
-                    '''
-                }
+                    echo "Building the project with Maven..."
+                    mvn clean package
+                '''
             }
         }
 
