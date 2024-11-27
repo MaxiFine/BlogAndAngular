@@ -62,7 +62,7 @@ pipeline {
                     // Build the Docker image
                     sh '''
                         echo "Building Docker image..."
-                        docker build -t $DOCKER_IMAGE_NAME maxfine22/blog-app:4.0
+                        docker build -t maxfine22/blog-app:4.0 $DOCKER_IMAGE_NAME
                     '''
                 }
             }
