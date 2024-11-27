@@ -3,17 +3,21 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
+        DOCKER_IMAGE_NAME = 'maxfine22/blog-app:4.0' // Docker Hub image name
     }
 
     stages {
 
-        stage('Clean Maven') {
+        stage('Clean Workspace') {
             steps {
+                echo "Cleaning up workspace..."
+                sh '''
+                    if [ -d "BlogAndAngular" ]; then
+                        echo "Removing existing BlogAndAngular directory..."
+                        rm -rf BlogAndAngular
+                    fi
+                '''
                 echo "Workspace cleaned successfully."
-                sh 'mvn clean'
-                echo "HAPPY CLEANING>>>>>>>>"
-
             }
         }
 
@@ -38,38 +42,37 @@ pipeline {
         }
 
         stage('Build Project') {
-
             steps {
-                sh '''
-                    echo "Checking project structure..."
-                    ls -la
+                dir('BlogAndAngular') {
+                    sh '''
+                        echo "Checking project structure..."
+                        ls -la
 
-                    if [ ! -f "pom.xml" ]; then
-                        echo "ERROR: pom.xml is missing in BlogAndAngular"
-                        exit 1
-                    fi
+                        if [ ! -f "pom.xml" ]; then
+                            echo "ERROR: pom.xml is missing"
+                            exit 1
+                        fi
 
-                    echo "Building the project with Maven..."
-                    mvn clean package
-                '''
+                        echo "Building the project with Maven..."
+                        mvn clean package
+                    '''
+                }
             }
         }
 
         stage('Build Docker Image') {
-
             steps {
                 script {
                     // Build the Docker image
                     sh '''
                         echo "Building Docker image..."
-                        docker build -t maxfine22/blog-app:4.0 $DOCKER_IMAGE_NAME
+                        docker build -t maxfine22/blog-app:4.0 .
                     '''
                 }
             }
         }
 
         stage('Login to Docker Hub') {
-
             steps {
                 script {
                     // Login to Docker Hub
@@ -81,7 +84,6 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-
             steps {
                 script {
                     // Push the Docker image to Docker Hub
@@ -96,11 +98,16 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Run the Docker container
+                    // Stop and remove any existing container with the same name
                     sh '''
+                        if [ "$(docker ps -aq -f name=jenkins-built-container)" ]; then
+                            echo "Stopping and removing existing container..."
+                            docker stop jenkins-built-container || true
+                            docker rm jenkins-built-container || true
+                        fi
+
                         echo "Running Docker container..."
                         docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:4.0
-                        echo container now running>>>>>>
                     '''
                 }
             }
@@ -108,9 +115,8 @@ pipeline {
 
         stage('Run Project') {
             steps {
-                echo "Project built and container started successfully and deployed."
-                echo "Test at http://localhost:8027"
-                echo "Thank you...."
+                echo "Project built and container started successfully."
+                echo "Test the application at http://<server-ip>:8027"
             }
         }
     }
