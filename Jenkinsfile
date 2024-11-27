@@ -82,10 +82,14 @@ pipeline {
 
         stage('Checkout Project') {
             steps {
+                // Remove old directory
                 sh 'rm -rf BlogAndAngular || true'
-                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+
+                // Clone the repository
+                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git BlogAndAngular'
             }
         }
+
 
         stage('Build Project') {
             agent {
