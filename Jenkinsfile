@@ -93,24 +93,50 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
-            steps {
-                dir('BlogAndAngular') {
-                    sh '''
-                        echo "Checking project structure..."
-                        ls -la
+//         stage('Build Project') {
+//             steps {
+//                 dir('BlogAndAngular') {
+//                     sh '''
+//                         echo "Checking project structure..."
+//                         ls -la
+//
+//                         if [ ! -f "pom.xml" ]; then
+//                             echo "ERROR: pom.xml is missing in BlogAndAngular"
+//                             exit 1
+//                         fi
+//
+//                         echo "Building the project with Maven..."
+//                         mvn clean package
+//                     '''
+//                 }
+//             }
+//         }
 
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing in BlogAndAngular"
-                            exit 1
-                        fi
+             stage('Build Project') {
+                        agent {
+                            docker {
+                                image 'maxfine22/agentdjnmp' // Use the specified Docker agent
+                                args '--user root' // Run as root, if necessary for permissions
+                            }
+                        }
+                        steps {
+                            dir('BlogAndAngular') {
+                                sh '''
+                                    echo "Checking project structure..."
+                                    ls -la
 
-                        echo "Building the project with Maven..."
-                        mvn clean package
-                    '''
-                }
-            }
-        }
+                                    if [ ! -f "pom.xml" ]; then
+                                        echo "ERROR: pom.xml is missing in BlogAndAngular"
+                                        exit 1
+                                    fi
+
+                                    echo "Building the project with Maven..."
+                                    mvn clean package
+                                '''
+                            }
+                        }
+                    }
+
 
         stage('Build Docker Image') {
             steps {
