@@ -87,7 +87,6 @@ pipeline {
 
                 // Clone the repository
                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
-                sh dir('BlogAndAngular')
             }
         }
 
