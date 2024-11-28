@@ -136,8 +136,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v2/', "dockerhub-creds") {
-                        docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
+                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub-creds") {
+                        docker.image("maxfine22/blog-app:4.0").push()
                     }
                 }
             }
