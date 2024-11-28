@@ -3,7 +3,7 @@ pipeline {
 
     environment {
 //         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds' // Jenkins credentials ID for Docker Hub
+        DOCKER_CREDENTIALS_ID = 'dockerhub-up-creds' // Jenkins credentials ID for Docker Hub
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
         IMAGE_TAG = "4.0"
     }
@@ -98,16 +98,27 @@ pipeline {
 //             }
 //         }
 
-            stage('Login to Docker Hub') {
-                steps {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
-                            echo 'Logged in to Docker Hub successfully.>>>>>>>>>>>>>>>>>>>'
-                            echo "LOGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+//             stage('Login to Docker Hub') {
+//                 steps {
+//                     script {
+//                         docker.withRegistry('https://index.docker.io/v2/', 'dockerhub-creds') {
+//                             echo 'Logged in to Docker Hub successfully.>>>>>>>>>>>>>>>>>>>'
+//                             echo "LOGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+//                         }
+//                     }
+//                 }
+//             }
+             stage('Login to Docker Hub') {
+                        steps {
+                            script {
+                                withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                    sh '''
+                                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin https://index.docker.io/v1/
+                                    '''
+                                }
+                            }
                         }
                     }
-                }
-            }
 
 //         stage('Push Docker Image') {
 //             steps {
@@ -122,7 +133,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub-creds") {
+                    docker.withRegistry('https://index.docker.io/v2/', "dockerhub-creds") {
                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
                 }
