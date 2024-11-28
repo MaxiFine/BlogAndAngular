@@ -101,7 +101,7 @@ pipeline {
             stage('Login to Docker Hub') {
                 steps {
                     script {
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
                             echo 'Logged in to Docker Hub successfully.>>>>>>>>>>>>>>>>>>>'
                             echo "LOGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
                         }
@@ -122,7 +122,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub-creds") {
                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
                 }
