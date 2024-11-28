@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
+//         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
+        DOCKER_CREDENTIALS_ID = 'dockerhub-creds' // Jenkins credentials ID for Docker Hub
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
         IMAGE_TAG = "4.0"
     }
@@ -89,8 +90,9 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        echo 'Logged in to Docker Hub'
+                    docker.withRegistry('https://hub.docker.com/repository/docker/maxfine22/blog', DOCKER_CREDENTIALS_ID) {
+                        echo 'Logged in to Docker Hub>>>>>>>>>>>>>>>>>'
+                        echo 'Logged in to Docker $DOCKER_CREDENTIALS_ID>>>>>>>>>>>>>>>>>>'
                     }
                 }
             }
@@ -99,7 +101,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry("https://hub.docker.com/repository/docker/maxfine22/blog-app", DOCKER_CREDENTIALS_ID) {
                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
                 }
