@@ -4,7 +4,7 @@ pipeline {
     environment {
 //         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
         DOCKER_CREDENTIALS_ID = 'dockerhub-up-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_IMAGE_NAME = 'maxfine22/blog-app:3.5' // Docker Hub image name
+        DOCKER_IMAGE_NAME = 'maxfine22/blog-app' // Docker Hub image name
         IMAGE_TAG = "4.0"
     }
 
@@ -151,7 +151,7 @@ pipeline {
                         docker stop jenkins-built-container || true
                         docker rm jenkins-built-container || true
                     fi
-                    docker run -d --name jenkins-built-container -p 8027:8027 ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
+                    docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:4.0
                 '''
             }
         }
