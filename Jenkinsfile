@@ -90,7 +90,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://hub.docker.com/repository/docker/maxfine22/blog', DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://registry.hub.docker.com' DOCKER_CREDENTIALS_ID) {
                         echo 'Logged in to Docker Hub>>>>>>>>>>>>>>>>>'
                         echo 'Logged in to Docker $DOCKER_CREDENTIALS_ID>>>>>>>>>>>>>>>>>>'
                     }
@@ -101,7 +101,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://hub.docker.com/repository/docker/maxfine22/blog-app", DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry("'https://registry.hub.docker.com'", DOCKER_CREDENTIALS_ID) {
                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
                 }
