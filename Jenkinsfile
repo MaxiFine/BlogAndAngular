@@ -87,26 +87,48 @@ pipeline {
                     }
                 }
 
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com' DOCKER_CREDENTIALS_ID) {
-                        echo 'Logged in to Docker Hub>>>>>>>>>>>>>>>>>'
-                        echo 'Logged in to Docker $DOCKER_CREDENTIALS_ID>>>>>>>>>>>>>>>>>>'
+//         stage('Login to Docker Hub') {
+//             steps {
+//                 script {
+//                     docker.withRegistry('https://registry.hub.docker.com' DOCKER_CREDENTIALS_ID) {
+//                         echo 'Logged in to Docker Hub>>>>>>>>>>>>>>>>>'
+//                         echo 'Logged in to Docker $DOCKER_CREDENTIALS_ID>>>>>>>>>>>>>>>>>>'
+//                     }
+//                 }
+//             }
+//         }
+
+            stage('Login to Docker Hub') {
+                steps {
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                            echo 'Logged in to Docker Hub successfully.>>>>>>>>>>>>>>>>>>>'
+                            echo "LOGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+                        }
                     }
                 }
             }
-        }
+
+//         stage('Push Docker Image') {
+//             steps {
+//                 script {
+//                     docker.withRegistry("'https://registry.hub.docker.com'", DOCKER_CREDENTIALS_ID) {
+//                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("'https://registry.hub.docker.com'", DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
                 }
             }
         }
+
 
         stage('Run Docker Container') {
             steps {
