@@ -5,7 +5,7 @@ pipeline {
 
     environment {
 //         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_CREDENTIALS_ID = 'dockerhub-up-creds' // Jenkins credentials ID for Docker Hub
+        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'  // 'dockerhub-up-creds' // Jenkins credentials ID for Docker Hub
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app' // Docker Hub image name
         IMAGE_TAG = "4.0"
     }
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Load Environment Variables from Credentials') {
             steps {
-                withCredentials([file(credentialsId: 'blogEnv', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'blogEnvs', variable: 'ENV_FILE')]) {
                     sh '''
                         echo "Loading environment variables from credentials..."
                         set -a
@@ -59,7 +59,7 @@ pipeline {
                 dir('BlogAndAngular') {
                     sh '''
                         if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing"
+                            echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR: pom.xml is missing<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                             exit 1
                         fi
                         mvn clean package
@@ -82,8 +82,11 @@ pipeline {
                         script {
                             // Build the Docker image
                             sh '''
-                                echo "Building Docker image..."
-                                docker build -t maxfine22/blog-app:4.0 .
+                                echo "<<<<<<<<<<<<<<<<<Building Docker image...>>>>>>>>>>>>>>>>>>>"
+                                docker build -t DOCKER_IMAGE_NAME:IMAGE_TAG .
+                                echo "<<<<<<<<<<<<<<<<<<<<<<<IMAGE BUILT>>>>>>>>>>>>>>>>>>>>>>>>>"
+                                echo "IMAGE BUILT WITH TAG $IMAGE_TAG>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
                             '''
                         }
                     }
@@ -113,7 +116,7 @@ pipeline {
             stage('Login to Docker Hub') {
                 steps {
                     script {
-                        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh '''
                                 echo "Logging into Docker Hub...>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
                                 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -138,8 +141,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub-creds") {
-                        docker.image("maxfine22/blog-app:4.0").push()
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        docker.image("DOCKER_IMAGE_NAME:IMAGE_TAG").push()
                     }
                 }
             }
