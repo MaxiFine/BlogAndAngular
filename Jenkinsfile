@@ -4,9 +4,8 @@ pipeline {
     }
 
     environment {
-//         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'  // 'dockerhub-up-creds' // Jenkins credentials ID for Docker Hub
-        DOCKER_IMAGE_NAME = 'maxfine22/blog-app' // Docker Hub image name
+        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
+        DOCKER_IMAGE_NAME = 'maxfine22/blog-app'
         IMAGE_TAG = "4.0"
     }
 
@@ -68,14 +67,6 @@ pipeline {
             }
         }
 
-//         stage('Build Docker Image') {
-//             steps {
-//                 script {
-//                     docker.build("maxfine22/blog-app:3.5")
-//                 }
-//             }
-//         }
-
          stage('Build Docker Image') {
 
                     steps {
@@ -92,27 +83,7 @@ pipeline {
                     }
                 }
 
-//         stage('Login to Docker Hub') {
-//             steps {
-//                 script {
-//                     docker.withRegistry('https://registry.hub.docker.com' DOCKER_CREDENTIALS_ID) {
-//                         echo 'Logged in to Docker Hub>>>>>>>>>>>>>>>>>'
-//                         echo 'Logged in to Docker $DOCKER_CREDENTIALS_ID>>>>>>>>>>>>>>>>>>'
-//                     }
-//                 }
-//             }
-//         }
 
-//             stage('Login to Docker Hub') {
-//                 steps {
-//                     script {
-//                         docker.withRegistry('https://index.docker.io/v2/', 'dockerhub-creds') {
-//                             echo 'Logged in to Docker Hub successfully.>>>>>>>>>>>>>>>>>>>'
-//                             echo "LOGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-//                         }
-//                     }
-//                 }
-//             }
             stage('Login to Docker Hub') {
                 steps {
                     script {
@@ -127,16 +98,6 @@ pipeline {
                 }
             }
 
-
-//         stage('Push Docker Image') {
-//             steps {
-//                 script {
-//                     docker.withRegistry("'https://registry.hub.docker.com'", DOCKER_CREDENTIALS_ID) {
-//                         docker.image("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}").push()
-//                     }
-//                 }
-//             }
-//         }
 
         stage('Push Docker Image') {
             steps {
@@ -161,7 +122,7 @@ pipeline {
             }
         }
 
-        stage('Run Project') {
+        stage('Accessing the App Project') {
             steps {
                 echo "Test the application at http://localhost:8027"
             }
@@ -170,7 +131,11 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline finished.'
+            echo '````````````````````````````Pipeline finished.``````````````````````````````'
+            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG \\ true"
+            echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG has been removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+            deleteDir()  // removing workspace files
+
         }
     }
 }
