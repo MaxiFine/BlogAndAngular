@@ -83,7 +83,7 @@ pipeline {
                             // Build the Docker image
                             sh '''
                                 echo "<<<<<<<<<<<<<<<<<Building Docker image...>>>>>>>>>>>>>>>>>>>"
-                                docker build -t DOCKER_IMAGE_NAME:IMAGE_TAG .
+                                docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG .
                                 echo "<<<<<<<<<<<<<<<<<<<<<<<IMAGE BUILT>>>>>>>>>>>>>>>>>>>>>>>>>"
                                 echo "IMAGE BUILT WITH TAG $IMAGE_TAG>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
@@ -116,7 +116,7 @@ pipeline {
             stage('Login to Docker Hub') {
                 steps {
                     script {
-                        withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh '''
                                 echo "Logging into Docker Hub...>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
                                 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -142,7 +142,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        docker.image("DOCKER_IMAGE_NAME:IMAGE_TAG").push()
+                        docker.image("$DOCKER_IMAGE_NAME:$IMAGE_TAG").push()
                     }
                 }
             }
@@ -163,7 +163,7 @@ pipeline {
 
         stage('Run Project') {
             steps {
-                echo "Test the application at http://<server-ip>:8027"
+                echo "Test the application at http://localhost:8027"
             }
         }
     }
