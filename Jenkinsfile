@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'agent1'
+    }
 
     environment {
 //         DOCKER_CREDENTIALS_ID = 'docker-creds' // Jenkins credentials ID for Docker Hub
@@ -113,9 +115,9 @@ pipeline {
                     script {
                         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh '''
-                                echo "Logging into Docker Hub..."
+                                echo "Logging into Docker Hub...>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
                                 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                                echo "Login successful!"
+                                echo "Login successful!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                             '''
                         }
                     }
