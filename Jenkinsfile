@@ -7,7 +7,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app'
         IMAGE_TAG = "4.0"
-        PROJECT_URL "http://localhost:8027/api/v1/blog/all-posts"
+        PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
     }
 
     stages {
