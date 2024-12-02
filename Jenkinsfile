@@ -7,6 +7,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app'
         IMAGE_TAG = "4.0"
+        PROJECT_URL "http://localhost:8027/api/v1/blog/all-posts"
     }
 
     stages {
@@ -124,7 +125,7 @@ pipeline {
 
         stage('Accessing the App Project') {
             steps {
-                echo "Test the application at http://localhost:8027"
+                echo "Test the application at $PROJECT_URL"
             }
         }
     }
@@ -132,7 +133,7 @@ pipeline {
     post {
         always {
             echo '````````````````````````````Pipeline finished.``````````````````````````````'
-            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG \\ true"
+            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
             echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG has been removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             deleteDir()  // removing workspace files
 
