@@ -33,6 +33,8 @@ build/
 .vscode/
 
 
+/target
+.env
 
 
 .mvn
