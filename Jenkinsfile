@@ -136,23 +136,7 @@ pipeline {
         }
     }
 
-             stage('Deploy Application to EC2 instance') {
-                        steps {
-                            script {
-                                def ec2Instance = 'ubuntu@13.42.38.132'
-                                def deploymentDir = dir('BlogAndAngular')
 
-                                sh """
-                                ssh -o StrictHostKeyChecking=no $ec2Instance << 'ENDSSH'
-                                    cd $deploymentDir
-                                    docker-compose down
-                                    docker-compose pull
-                                    docker-compose up -d
-                                ENDSSH
-                                """
-                            }
-                        }
-                    }
 
                     stage('Deploy Application to EC2 instance') {
                         steps {
