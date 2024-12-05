@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
+        stage('Build CLEAN') {
             steps {
                 dir('BlogAndAngular') {
                     sh '''
@@ -48,11 +48,27 @@ pipeline {
                             echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR: pom.xml is missing<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                             exit 1
                         fi
-                        mvn clean package
+                        mvn clean
                     '''
+                    echo "BUILD CLEAN>>>>>>>>>>>>>NOW >>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                 }
             }
         }
+
+         stage('Build PACKAGE') {
+                    steps {
+                        dir('BlogAndAngular') {
+                            sh '''
+                                if [ ! -f "pom.xml" ]; then
+                                    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>ERROR: pom.xml is missing<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                                    exit 1
+                                fi
+                                mvn package
+                            '''
+                            echo "finally packaged>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                        }
+                    }
+                }
 
          stage('Build Docker Image') {
 
