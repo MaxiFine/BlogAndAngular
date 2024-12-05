@@ -132,14 +132,26 @@ pipeline {
         }
     }
 
+//     post {
+//         always {
+//             echo '````````````````````````````Pipeline finished.``````````````````````````````'
+// //             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+//             echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+// //             deleteDir()  // removing workspace files
+//             sh 'docker system prune -f'
+//             cleanWs()
+//         }
+//     }
+
     post {
         always {
             echo '````````````````````````````Pipeline finished.``````````````````````````````'
-//             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-            echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-//             deleteDir()  // removing workspace files
+            echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
+            // Uncomment to remove Docker image if needed
+             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+            deleteDir()
             sh 'docker system prune -f'
-            cleanWs()
         }
     }
+
 }
