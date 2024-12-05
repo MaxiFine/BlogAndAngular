@@ -204,14 +204,14 @@ pipeline {
     }
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
-        DOCKER_IMAGE_NAME = 'maxfine22/blog-app'
+        DOCKER_CREDENTIALS_ID = "docker-hub-creds"
+        DOCKER_IMAGE_NAME = "maxfine22/blog-app"
         IMAGE_TAG = "4.0"
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         SSH_KEY_ID = "blog-lab-ssh"
-        AWS_ACCESS_KEY_ID = credentials('blog-lab-accesskeys') // Use Jenkins credentials store
-        AWS_SECRET_ACCESS_KEY = credentials('blog-lab-secret-keys') // Ensure you also store secret this way
-        AWS_DEFAULT_REGION = 'us-east-2'
+        AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys") // Use Jenkins credentials store
+        AWS_SECRET_ACCESS_KEY = credentials("blog-lab-secret-keys") // Ensure you also store secret this way
+        AWS_DEFAULT_REGION = "us-east-2"
     }
 
     stages {
@@ -234,6 +234,19 @@ pipeline {
                 sh 'mvn -v'
             }
         }
+
+          stage('Verify Git Configuration') {
+                    steps {
+                        sh 'git config --global http.postBuffer 524288000' // Increase buffer
+                        sh 'git config --global http.version HTTP/1.1'     // Set HTTP version to 1.1
+                    }
+                }
+
+                stage('Checkout Project') {
+                    steps {
+                        sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git' // Change this to SSH if needed
+                    }
+                }
 
         stage('Checkout Project') {
             steps {
