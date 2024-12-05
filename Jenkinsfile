@@ -8,6 +8,10 @@ pipeline {
         DOCKER_IMAGE_NAME = 'maxfine22/blog-app'
         IMAGE_TAG = "4.0"
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
+        SSH_KEY_ID = "blog-lab-ssh"
+        AWS_ACCESS_KEY_ID = credentials('blog-lab-accesskeys')    // Use Jenkins credentials store
+        AWS_SECRET_ACCESS_KEY = credentials('AKIAZM7VS5FVCZYJLKVF')
+        AWS_DEFAULT_REGION = 'us-east-2'
     }
 
     stages {
@@ -132,22 +136,75 @@ pipeline {
         }
     }
 
-//     post {
-//         always {
-//             echo '````````````````````````````Pipeline finished.``````````````````````````````'
-// //             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-//             echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-// //             deleteDir()  // removing workspace files
-//             sh 'docker system prune -f'
-//             cleanWs()
-//         }
-//     }
+             stage('Deploy Application to EC2 instance') {
+                        steps {
+                            script {
+                                def ec2Instance = 'ubuntu@13.42.38.132'
+                                def deploymentDir = dir('BlogAndAngular')
+
+                                sh """
+                                ssh -o StrictHostKeyChecking=no $ec2Instance << 'ENDSSH'
+                                    cd $deploymentDir
+                                    docker-compose down
+                                    docker-compose pull
+                                    docker-compose up -d
+                                ENDSSH
+                                """
+                            }
+                        }
+                    }
+
+                    stage('Deploy Application to EC2 instance') {
+                        steps {
+                            script {
+                                // Define your EC2 instance details
+                                def ec2Instance = 'ubuntu@13.42.38.132'
+                                def deploymentDir = dir('BlogAndAngular')
+
+                                withCredentials([sshUserPrivateKey(credentialsId: 'blog-lab-ssh', keyVariable: 'SSH_KEY_ID')]) {
+                                    sh """
+                                    ssh -o StrictHostKeyChecking=no -i \$SSH_PRIVATE_KEY $ec2Instance << 'ENDSSH'
+                                        cd $deploymentDir
+                                        docker-compose down
+                                        docker-compose pull
+                                        docker-compose up -d
+                                    ENDSSH
+                                    """
+                                }
+                            }
+                        }
+                    }
+
+
+                stage('Backup Jenkins Server to S3') {
+                    steps {
+                        script {
+                            def s3Bucket = 'blog-lab-bucket'
+                            def backupDir = '/var/jenkins_home'
+                            def timestamp = new Date().format("yyyyMMddHHmmss")
+                            def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+
+                            sh "tar -czvf ${backupFile} -C ${backupDir} ."
+
+             // Upload to S3 using AWS CLI with access keys set in environment variables
+                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                            sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
+                        }
+
+                        // Clean up local backup file
+                        sh "rm -f ${backupFile}"
+                            //sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
+                            sh "rm -f ${backupFile}"
+                        }
+                    }
+                            }
+
+
 
     post {
         always {
             echo '````````````````````````````Pipeline finished.``````````````````````````````'
             echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
-            // Uncomment to remove Docker image if needed
              sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
             deleteDir()
             sh 'docker system prune -f'
