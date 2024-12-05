@@ -135,10 +135,11 @@ pipeline {
     post {
         always {
             echo '````````````````````````````Pipeline finished.``````````````````````````````'
-            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-            echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG has been removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            deleteDir()  // removing workspace files
-
+//             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+            echo " Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+//             deleteDir()  // removing workspace files
+            sh 'docker system prune -f'
+            cleanWs()
         }
     }
 }
