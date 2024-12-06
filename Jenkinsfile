@@ -73,17 +73,6 @@ pipeline {
             }
         }
 
-//
-//         stage('Build Docker Image') {
-//             steps {
-//                 script {
-//                     sh '''
-//                         docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG .
-//                     '''
-//                 }
-//             }
-//         }
-
 
         stage('Build Docker Image') {
             steps {
@@ -99,10 +88,6 @@ pipeline {
                 }
             }
         }
-
-
-
-
         stage('Login to Docker Hub') {
             steps {
                 script {
@@ -142,16 +127,6 @@ pipeline {
                 echo "Test the application at $PROJECT_URL"
             }
         }
-//
-//          stage('Deployment On EC2') {
-//                     steps {
-//                         sshagent(['blog-lab-ssh']) {
-//                             sh '''
-//                                 ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} || true && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
-//                             '''
-//                         }
-//                     }
-//                 }
 
 
             stage('Deployment On EC2') {
@@ -173,11 +148,6 @@ pipeline {
                     }
                 }
             }
-
-
-
-
-
 
       stage('Backup Jenkins Server to S3') {
           steps {
@@ -206,6 +176,7 @@ pipeline {
               }
           }
       }
+    }
 
     post {
         success {
