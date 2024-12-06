@@ -12,7 +12,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
         AWS_DEFAULT_REGION = "us-east-2"
         APP_NAME = "jenkins-built-container"
-         BLOG_ENV = credentials('blogEnv')
+        BLOG_ENV = credentials('blogEnv')
     }
 
     stages {
@@ -75,7 +75,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('BlogAndAngular') { // Ensure you are in the correct directory
+                dir('BlogAndAngular') {
                     script {
                         sh '''
                             echo "<<<<<<<<<<<<<<<<<Building Docker image...>>>>>>>>>>>>>>>>>>>"
@@ -87,6 +87,7 @@ pipeline {
                 }
             }
         }
+
         stage('Login to Docker Hub') {
             steps {
                 script {
@@ -127,79 +128,76 @@ pipeline {
             }
         }
 
+        stage('Deployment On EC2') {
+            steps {
+                sshagent(['blog-lab-ssh']) {
+                    script {
+                        def ec2Host = '13.42.38.132'
+                        def deployUser = 'ubuntu'
+                        def repoUrl = 'https://github.com/MaxiFine/BlogAndAngular.git'
+                        def repoName = 'BlogAndAngular'
 
-      stage('Deployment On EC2') {
-          steps {
-              sshagent(['blog-lab-ssh']) {
-                  script {
-                      def ec2Host = '13.42.38.132'
-                      def deployUser = 'ubuntu'
-                      def repoUrl = 'https://github.com/MaxiFine/BlogAndAngular.git'
-                      def repoName = 'BlogAndAngular'
+                        // SSH into the EC2 instance and perform deployment
+                        sh """
+                            # Clone or update the repository
+                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '''
+                                # Remove existing directory if it exists
+                                rm -rf ~/${repoName} || true
 
-                      // SSH into the EC2 instance and perform deployment
-                      sh """
-                          # Clone or update the repository
-                          ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '''
-                              # Remove existing directory if it exists
-                              rm -rf ~/${repoName} || true
+                                # Clone the repository
+                                git clone ${repoUrl}
 
-                              # Clone the repository
-                              git clone ${repoUrl}
+                                # Change to the project directory
+                                cd ~/${repoName}
 
-                              # Change to the project directory
-                              cd ~/${repoName}
+                                docker-compose down || true
 
-                              docker-compose down || true
+                                # Start the application
+                                docker-compose up -d
+                            '''
+                        """
+                    }
+                }
+            }
+        }
 
-                              # Start the application
-                              docker-compose up -d
-                          '''
-                      """
-                  }
-              }
-          }
-      }
+        stage('Backup Jenkins Server to S3') {
+            steps {
+                script {
+                    try {
+                        def s3Bucket = 'blog-lab-bucket'
+                        def backupDir = '/home/jenkins'
+                        def timestamp = new Date().format("yyyyMMddHHmmss")
+                        def backupFile = "jenkins_backup_${timestamp}.tar.gz"
 
-      stage('Backup Jenkins Server to S3') {
-          steps {
-              script {
-                  try {
-                      def s3Bucket = 'blog-lab-bucket'
-                      def backupDir = '/home/jenkins'
-                      def timestamp = new Date().format("yyyyMMddHHmmss")
-                      def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+                        // Ensure backup directory exists
+                        sh "mkdir -p ${backupDir}"
 
-                      // Ensure backup directory exists
-                      sh "mkdir -p ${backupDir}"
+                        // Create a temporary backup folder
+                        sh "cp -r ${backupDir}/workspace ./temp_backup || exit 0"
 
-                      // Create a temporary backup folder
-                      sh "cp -r ${backupDir}/workspace ./temp_backup || exit 0"
+                        // Create the backup archive
+                        sh "tar --ignore-failed-read -czvf ${backupFile} -C ./temp_backup ."
 
-                      // Create the backup archive
-                      sh "tar --ignore-failed-read -czvf ${backupFile} -C ./temp_backup ."
+                        // Upload to S3
+                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                            sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
+                        }
 
-                      // Upload to S3
-                      withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                          sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
-                      }
+                        // Cleanup
+                        sh "rm -rf ./temp_backup"
+                        sh "rm -f ${backupFile}"
 
-                      // Cleanup
-                      sh "rm -rf ./temp_backup"
-                      sh "rm -f ${backupFile}"
-
-                      echo "Backup successful: ${backupFile}"
-                  } catch (Exception e) {
-                      echo "Backup failed: ${e.message}"
-                      // Optionally, you can fail the pipeline
-                      // currentBuild.result = 'FAILURE'
-                  }
-              }
-          }
-      }
-
-
-
+                        echo "Backup successful: ${backupFile}"
+                    } catch (Exception e) {
+                        echo "Backup failed: ${e.message}"
+                        // Optionally, you can fail the pipeline
+                        // currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+    }
 
     post {
         success {
@@ -214,4 +212,5 @@ pipeline {
             echo 'Pipeline execution completed.'
         }
     }
+}
 }
