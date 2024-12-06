@@ -182,7 +182,7 @@ pipeline {
             echo '````````````````````````````Pipeline finished.``````````````````````````````'
             echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-            deleteDir()
+            //deleteDir()
             sh 'docker system prune -f'
         }
     }
