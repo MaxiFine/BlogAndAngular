@@ -166,7 +166,7 @@ pipeline {
                     steps {
                         sshagent(['blog-lab-ssh']) {
                             sh '''
-                                ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+                                ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} || true && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
                             '''
                         }
                     }
