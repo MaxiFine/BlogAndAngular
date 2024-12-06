@@ -6,7 +6,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = "docker-hub-creds"
         DOCKER_IMAGE_NAME = "maxfine22/blog-app"
-        IMAGE_TAG = "4.0"
+        IMAGE_TAG = "4.1"
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         SSH_KEY_ID = "blog-lab-ssh"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
