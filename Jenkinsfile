@@ -1,3 +1,7 @@
+def gitSha() {
+    return sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+}
+
 pipeline {
     agent {
         label 'agent1'
@@ -6,7 +10,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = "docker-hub-creds"
         DOCKER_IMAGE_NAME = "maxfine22/blog-app"
-        IMAGE_TAG = "4.1"
+        IMAGE_TAG = gitSha()
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         SSH_KEY_ID = "blog-lab-ssh"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
@@ -171,8 +175,12 @@ pipeline {
 //                        // Create a backup archive from the backup directory
 //                        sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
 
-                        // Create a backup archive from the backup directory using zip
-                        sh "cd ${backupDir} && zip -r ${backupFile} workspace/*" // Zip the contents of the workspace
+                          // Create a backup archive from the backup directory using tar instead of zip
+                          sh "tar -czvf jenkins_backup_${timestamp}.tar.gz -C /home/jenkins/backups ."
+
+
+//                         // Create a backup archive from the backup directory using zip
+//                         sh "cd ${backupDir} && zip -r ${backupFile} workspace/*" // Zip the contents of the workspace
 
                         // Upload to S3
                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
