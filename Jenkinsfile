@@ -185,12 +185,20 @@ pipeline {
     }
 
     post {
-        always {
-            echo '````````````````````````````Pipeline finished.``````````````````````````````'
-            echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
+        success {
+            echo 'Pipeline finished successfully.'
+            echo "Cleaning up Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG."
             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-            //deleteDir()
             sh 'docker system prune -f'
         }
+        failure {
+            echo 'Pipeline failed. Skipping cleanup steps.'
+        }
+        always {
+            echo '>>>>>>>>>>>>>>>>>>>>>>Pipeline execution completed.>>>>>>>>>>>>>>'
+        }
     }
+
+
+
 }
