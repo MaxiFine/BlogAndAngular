@@ -161,8 +161,6 @@ pipeline {
           }
       }
 
-
-
       stage('Backup Jenkins Server to S3') {
           steps {
               script {
@@ -172,25 +170,36 @@ pipeline {
                       def timestamp = new Date().format("yyyyMMddHHmmss")
                       def backupFile = "jenkins_backup_${timestamp}.tar.gz"
 
-                      // Check if backup directory exists before creating tar
-                      sh "test -d ${backupDir}"
+                      // Ensure backup directory exists
+                      sh "mkdir -p ${backupDir}"
 
-                      sh "tar -czvf ${backupFile} -C ${backupDir} ."
+                      // Create a temporary backup folder
+                      sh "cp -r ${backupDir}/workspace ./temp_backup || exit 0"
+
+                      // Create the backup archive
+                      sh "tar --ignore-failed-read -czvf ${backupFile} -C ./temp_backup ."
+
+                      // Upload to S3
                       withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                           sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
                       }
+
+                      // Cleanup
+                      sh "rm -rf ./temp_backup"
                       sh "rm -f ${backupFile}"
 
                       echo "Backup successful: ${backupFile}"
                   } catch (Exception e) {
                       echo "Backup failed: ${e.message}"
-                      // Optionally, you can choose to fail the pipeline or just log the error
+                      // Optionally, you can fail the pipeline
                       // currentBuild.result = 'FAILURE'
                   }
               }
           }
       }
-    }
+
+
+
 
     post {
         success {
