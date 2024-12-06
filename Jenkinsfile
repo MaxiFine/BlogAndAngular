@@ -194,15 +194,7 @@ pipeline {
         }
     }
 
-     stage("Zip"){
-                steps{
-                    sh "mkdir ${TAG_NAME}"
-                    dir("${TAG_NAME}"){
-                        sh "docker save ${api_imagename}:latest > ${api_imagename}-${TAG_NAME}.tar.gz"
-                        sh "docker save ${auth_imagename}:latest > ${auth_imagename}-${TAG_NAME}.tar.gz"
-                    }
-                }
-            }
+
 
     post {
         success {
