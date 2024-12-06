@@ -16,7 +16,7 @@ services:
       - ${DB_PORT}
     networks:
       - ${NETWORK}
-    restart: on-failure
+    restart: on-failure:3
 
 
   # Spring boot application Service
