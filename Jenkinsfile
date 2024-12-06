@@ -12,6 +12,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
         AWS_DEFAULT_REGION = "us-east-2"
         APP_NAME = "jenkins-built-container"
+         BLOG_ENV = credentials('blogEnv')
     }
 
     stages {
@@ -141,36 +142,49 @@ pipeline {
                 echo "Test the application at $PROJECT_URL"
             }
         }
-
-//         stage('Deploy Application to EC2 instance') {
-//             steps {
-//                 script {
-//                     def ec2Instance = 'ubuntu@13.42.38.132'
-//                     def deploymentDir = "BlogAndAngular"
 //
-//                     withCredentials([sshUserPrivateKey(credentialsId: ${SSH_KEY_ID}, usernameVariable: 'USERNAME', keyVariable: 'SSH_KEY_ID')]) {
-//                         sh """
-//                         ssh -o StrictHostKeyChecking=no -i \$SSH_KEY_ID \$USERNAME@\$ec2Instance << 'ENDSSH'
-//                             cd $deploymentDir
-//                             docker-compose down
-//                             docker-compose pull
-//                             docker-compose up -d
-//                         ENDSSH
-//                         """
+//          stage('Deployment On EC2') {
+//                     steps {
+//                         sshagent(['blog-lab-ssh']) {
+//                             sh '''
+//                                 ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} || true && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+//                             '''
+//                         }
 //                     }
 //                 }
-//             }
-//         }
 
-         stage('Deployment On EC2') {
-                    steps {
-                        sshagent(['blog-lab-ssh']) {
-                            sh '''
-                                ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} || true && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
-                            '''
-                        }
+
+            stage('Deployment On EC2') {
+                steps {
+                    sshagent(['blog-lab-ssh']) {
+                        sh '''
+                            # Create the env file from the credentials
+                            echo "$BLOG_ENV" > .env
+
+                            # Copy the env file to the remote server
+                            scp -o StrictHostKeyChecking=no .env ubuntu@13.42.38.132:/home/ubuntu/${APP_NAME}.env
+
+                            # Optional: Remove the local env file for security
+                            rm .env
+
+                            # Stop and remove existing container if it exists
+                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker stop ${APP_NAME} || true"
+                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker rm ${APP_NAME} || true"
+
+                            # Pull and run the new container with env file
+                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} && \
+                            docker run -d \
+                            --env-file /home/ubuntu/${APP_NAME}.env \
+                            -p 8027:8027 \
+                            --name ${APP_NAME} \
+                            ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+
+                            # Optional: Remove the env file from the remote server after deployment
+                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "rm /home/ubuntu/${APP_NAME}.env"
+                        '''
                     }
                 }
+            }
 
 
 
