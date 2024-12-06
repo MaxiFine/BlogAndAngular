@@ -139,22 +139,13 @@ pipeline {
 
                         // SSH into the EC2 instance and perform deployment
                         sh """
-                            # Clone or update the repository
-                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '''
-                                # Remove existing directory if it exists
+                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
                                 rm -rf ~/${repoName} || true
-
-                                # Clone the repository
                                 git clone ${repoUrl}
-
-                                # Change to the project directory
                                 cd ~/${repoName}
-
                                 docker-compose down || true
-
-                                # Start the application
                                 docker-compose up -d
-                            '''
+                            '
                         """
                     }
                 }
@@ -189,10 +180,11 @@ pipeline {
                         sh "rm -f ${backupFile}"
 
                         echo "Backup successful: ${backupFile}"
+                        echo "System clean up >>>>>><<<<<<<<<"
+                        sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+                        sh 'docker system prune -f'
                     } catch (Exception e) {
                         echo "Backup failed: ${e.message}"
-                        // Optionally, you can fail the pipeline
-                        // currentBuild.result = 'FAILURE'
                     }
                 }
             }
@@ -202,8 +194,7 @@ pipeline {
     post {
         success {
             echo 'Pipeline finished successfully.'
-            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-            sh 'docker system prune -f'
+
         }
         failure {
             echo 'Pipeline failed.'
@@ -212,5 +203,4 @@ pipeline {
             echo 'Pipeline execution completed.'
         }
     }
-}
 }
