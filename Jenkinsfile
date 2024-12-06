@@ -14,18 +14,25 @@ pipeline {
         AWS_DEFAULT_REGION = "us-east-2"
     }
 
-    stages {
-        stage('Clean Workspace') {
-            steps {
-                sh '''
-                    if [ -d "BlogAndAngular" ]; then
-                        echo "Removing existing BlogAndAngular directory..."
-                        rm -rf BlogAndAngular
-                    fi
-                '''
-                cleanWs()
+//     stages {
+//         stage('Clean Workspace') {
+//             steps {
+//                 sh '''
+//                     if [ -d "BlogAndAngular" ]; then
+//                         echo "Removing existing BlogAndAngular directory..."
+//                         rm -rf BlogAndAngular
+//                     fi
+//                 '''
+//                 cleanWs()
+//             }
+//         }
+
+            stage('Clean Workspace') {
+                steps {
+                    cleanWs()
+                }
             }
-        }
+
 
         stage('Verify Build Tools') {
             steps {
