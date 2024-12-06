@@ -168,8 +168,11 @@ pipeline {
                         // Create a temporary backup folder
                         sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
 
-                       // Create a backup archive from the backup directory
-                       sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
+//                        // Create a backup archive from the backup directory
+//                        sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
+
+                        // Create a backup archive from the backup directory using zip
+                        sh "cd ${backupDir} && zip -r ${backupFile} workspace/*" // Zip the contents of the workspace
 
                         // Upload to S3
                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
@@ -190,6 +193,8 @@ pipeline {
             }
         }
     }
+
+
 
     post {
         success {

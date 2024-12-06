@@ -25,13 +25,13 @@ services:
 #      context: .
 #      dockerfile: Dockerfile
     container_name: jenkins-lab-deploy
-    image: maxfine22/blog-app:4.0
+    image: maxfine22/blog-app:4.1
     environment:
        DATABASE_URL: ${SPRING_DATASOURCE_URL}
        DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
        DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
-      - 6060:6060
+      - 8027:8027
     env_file:
       - .env
     depends_on:
