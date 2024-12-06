@@ -147,9 +147,9 @@ pipeline {
                     def ec2Instance = 'ubuntu@13.42.38.132'
                     def deploymentDir = "BlogAndAngular"
 
-                    withCredentials([sshUserPrivateKey(credentialsId: 'blog-lab-ssh', keyVariable: 'SSH_KEY_ID')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: ${SSH_KEY_ID}, usernameVariable: 'USERNAME', keyVariable: 'SSH_KEY_ID')]) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no -i \$SSH_KEY_ID $ec2Instance << 'ENDSSH'
+                        ssh -o StrictHostKeyChecking=no -i \$SSH_KEY_ID \$USERNAME@$ec2Instance << 'ENDSSH'
                             cd $deploymentDir
                             docker-compose down
                             docker-compose pull
@@ -160,6 +160,9 @@ pipeline {
                 }
             }
         }
+
+
+
 
         stage('Backup Jenkins Server to S3') {
             steps {
