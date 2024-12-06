@@ -10,7 +10,7 @@ pipeline {
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         SSH_KEY_ID = "blog-lab-ssh"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys") // Use Jenkins credentials store
-        AWS_SECRET_ACCESS_KEY = credentials("blog-lab-secret-keys") // Ensure you also store secret this way
+//         AWS_SECRET_ACCESS_KEY = credentials("blog-lab-secret-keys") // Ensure you also store secret this way
         AWS_DEFAULT_REGION = "us-east-2"
     }
 
@@ -177,13 +177,13 @@ pipeline {
         }
     }
 
-//     post {
-//         always {
-//             echo '````````````````````````````Pipeline finished.``````````````````````````````'
-//             echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
-//             sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-//             deleteDir()
-//             sh 'docker system prune -f'
-//         }
-//     }
+    post {
+        always {
+            echo '````````````````````````````Pipeline finished.``````````````````````````````'
+            echo "Docker image $DOCKER_IMAGE_NAME:$IMAGE_TAG is to be removed."
+            sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+            deleteDir()
+            sh 'docker system prune -f'
+        }
+    }
 }
