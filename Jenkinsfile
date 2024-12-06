@@ -158,15 +158,6 @@ pipeline {
                 steps {
                     sshagent(['blog-lab-ssh']) {
                         sh '''
-                            # Create the env file from the credentials
-                            echo "$BLOG_ENV" > .env
-
-                            # Copy the env file to the remote server
-                            scp -o StrictHostKeyChecking=no .env ubuntu@13.42.38.132:/home/ubuntu/${APP_NAME}.env
-
-                            # Optional: Remove the local env file for security
-                            rm .env
-
                             # Stop and remove existing container if it exists
                             ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker stop ${APP_NAME} || true"
                             ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker rm ${APP_NAME} || true"
@@ -174,13 +165,10 @@ pipeline {
                             # Pull and run the new container with env file
                             ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} && \
                             docker run -d \
-                            --env-file /home/ubuntu/${APP_NAME}.env \
+                            --env-file /home/ubuntu/.env \
                             -p 8027:8027 \
                             --name ${APP_NAME} \
                             ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
-
-                            # Optional: Remove the env file from the remote server after deployment
-                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "rm /home/ubuntu/${APP_NAME}.env"
                         '''
                     }
                 }
@@ -191,23 +179,33 @@ pipeline {
 
 
 
-        stage('Backup Jenkins Server to S3') {
-            steps {
-                script {
-                    def s3Bucket = 'blog-lab-bucket'
-                    def backupDir = '/var/jenkins_home'
-                    def timestamp = new Date().format("yyyyMMddHHmmss")
-                    def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+      stage('Backup Jenkins Server to S3') {
+          steps {
+              script {
+                  try {
+                      def s3Bucket = 'blog-lab-bucket'
+                      def backupDir = '/home/jenkins_home'
+                      def timestamp = new Date().format("yyyyMMddHHmmss")
+                      def backupFile = "jenkins_backup_${timestamp}.tar.gz"
 
-                    sh "tar -czvf ${backupFile} -C ${backupDir} ."
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
-                    }
-                    sh "rm -f ${backupFile}"
-                }
-            }
-        }
-    }
+                      // Check if backup directory exists before creating tar
+                      sh "test -d ${backupDir}"
+
+                      sh "tar -czvf ${backupFile} -C ${backupDir} ."
+                      withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                          sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
+                      }
+                      sh "rm -f ${backupFile}"
+
+                      echo "Backup successful: ${backupFile}"
+                  } catch (Exception e) {
+                      echo "Backup failed: ${e.message}"
+                      // Optionally, you can choose to fail the pipeline or just log the error
+                      // currentBuild.result = 'FAILURE'
+                  }
+              }
+          }
+      }
 
     post {
         success {
