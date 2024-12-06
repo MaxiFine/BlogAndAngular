@@ -11,6 +11,7 @@ pipeline {
         SSH_KEY_ID = "blog-lab-ssh"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
         AWS_DEFAULT_REGION = "us-east-2"
+        APP_NAME = "jenkins-built-container"
     }
 
     stages {
@@ -141,25 +142,37 @@ pipeline {
             }
         }
 
-        stage('Deploy Application to EC2 instance') {
-            steps {
-                script {
-                    def ec2Instance = 'ubuntu@13.42.38.132'
-                    def deploymentDir = "BlogAndAngular"
+//         stage('Deploy Application to EC2 instance') {
+//             steps {
+//                 script {
+//                     def ec2Instance = 'ubuntu@13.42.38.132'
+//                     def deploymentDir = "BlogAndAngular"
+//
+//                     withCredentials([sshUserPrivateKey(credentialsId: ${SSH_KEY_ID}, usernameVariable: 'USERNAME', keyVariable: 'SSH_KEY_ID')]) {
+//                         sh """
+//                         ssh -o StrictHostKeyChecking=no -i \$SSH_KEY_ID \$USERNAME@\$ec2Instance << 'ENDSSH'
+//                             cd $deploymentDir
+//                             docker-compose down
+//                             docker-compose pull
+//                             docker-compose up -d
+//                         ENDSSH
+//                         """
+//                     }
+//                 }
+//             }
+//         }
 
-                    withCredentials([sshUserPrivateKey(credentialsId: ${SSH_KEY_ID}, usernameVariable: 'USERNAME', keyVariable: 'SSH_KEY_ID')]) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no -i \$SSH_KEY_ID \$USERNAME@$ec2Instance << 'ENDSSH'
-                            cd $deploymentDir
-                            docker-compose down
-                            docker-compose pull
-                            docker-compose up -d
-                        ENDSSH
-                        """
+         stage('Deployment On EC2') {
+                    steps {
+                        sshagent(['blog-lab-ssh']) {
+                            sh '''
+                                ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} && docker run -d -p 8027:8027 --name ${APP_NAME} ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+                            '''
+                        }
                     }
                 }
-            }
-        }
+
+
 
 
 
