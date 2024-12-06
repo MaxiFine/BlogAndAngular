@@ -63,15 +63,43 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Verify Files') {
             steps {
-                script {
-                    sh '''
-                        docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG .
-                    '''
+                dir('BlogAndAngular') {
+                    sh 'ls -la'
                 }
             }
         }
+
+//
+//         stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     sh '''
+//                         docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG .
+//                     '''
+//                 }
+//             }
+//         }
+
+
+        stage('Build Docker Image') {
+            steps {
+                dir('BlogAndAngular') { // Ensure you are in the correct directory
+                    script {
+                        sh '''
+                            echo "<<<<<<<<<<<<<<<<<Building Docker image...>>>>>>>>>>>>>>>>>>>"
+                            docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
+                            echo "<<<<<<<<<<<<<<<<<<<<<<<IMAGE BUILT>>>>>>>>>>>>>>>>>>>>>>>>>"
+                            echo "IMAGE BUILT WITH TAG $IMAGE_TAG>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                        '''
+                    }
+                }
+            }
+        }
+
+
+
 
         stage('Login to Docker Hub') {
             steps {
