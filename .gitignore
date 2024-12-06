@@ -34,8 +34,7 @@ build/
 
 
 /target
-.env
 target
-
+.env
 .mvn
 
