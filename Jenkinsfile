@@ -157,7 +157,8 @@ pipeline {
                 script {
                     try {
                         def s3Bucket = 'blog-lab-bucket'
-                        def backupDir = '/home/jenkins'
+                        def backupDir = '/home/jenkins/backups'
+                        def jenkinsHome = '/home/jenkins'
                         def timestamp = new Date().format("yyyyMMddHHmmss")
                         def backupFile = "jenkins_backup_${timestamp}.tar.gz"
 
@@ -165,10 +166,10 @@ pipeline {
                         sh "mkdir -p ${backupDir}"
 
                         // Create a temporary backup folder
-                        sh "cp -r ${backupDir}/workspace ./temp_backup || exit 0"
+                        sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
 
-                        // Create the backup archive
-                        sh "tar --ignore-failed-read -czvf ${backupFile} -C ./temp_backup ."
+                       // Create a backup archive from the backup directory
+                       sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
 
                         // Upload to S3
                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
@@ -176,8 +177,7 @@ pipeline {
                         }
 
                         // Cleanup
-                        sh "rm -rf ./temp_backup"
-                        sh "rm -f ${backupFile}"
+                        sh "rm -f ${backupDir}/${backupFile}"
 
                         echo "Backup successful: ${backupFile}"
                         echo "System clean up >>>>>><<<<<<<<<"
