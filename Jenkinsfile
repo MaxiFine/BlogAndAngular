@@ -73,7 +73,6 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
                 dir('BlogAndAngular') { // Ensure you are in the correct directory
@@ -129,32 +128,47 @@ pipeline {
         }
 
 
-            stage('Deployment On EC2') {
-                steps {
-                    sshagent(['blog-lab-ssh']) {
-                        sh '''
-                            # Stop and remove existing container if it exists
-                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker stop ${APP_NAME} || true"
-                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker rm ${APP_NAME} || true"
+      stage('Deployment On EC2') {
+          steps {
+              sshagent(['blog-lab-ssh']) {
+                  script {
+                      def ec2Host = '13.42.38.132'
+                      def deployUser = 'ubuntu'
+                      def repoUrl = 'https://github.com/MaxiFine/BlogAndAngular.git'
+                      def repoName = 'BlogAndAngular'
 
-                            # Pull and run the new container with env file
-                            ssh -o StrictHostKeyChecking=no ubuntu@13.42.38.132 "docker pull ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} && \
-                            docker run -d \
-                            --env-file /home/ubuntu/.env \
-                            -p 8027:8027 \
-                            --name ${APP_NAME} \
-                            ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
-                        '''
-                    }
-                }
-            }
+                      // SSH into the EC2 instance and perform deployment
+                      sh """
+                          # Clone or update the repository
+                          ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '''
+                              # Remove existing directory if it exists
+                              rm -rf ~/${repoName} || true
+
+                              # Clone the repository
+                              git clone ${repoUrl}
+
+                              # Change to the project directory
+                              cd ~/${repoName}
+
+                              docker-compose down || true
+
+                              # Start the application
+                              docker-compose up -d
+                          '''
+                      """
+                  }
+              }
+          }
+      }
+
+
 
       stage('Backup Jenkins Server to S3') {
           steps {
               script {
                   try {
                       def s3Bucket = 'blog-lab-bucket'
-                      def backupDir = '/home/jenkins_home'
+                      def backupDir = '/home/jenkins'
                       def timestamp = new Date().format("yyyyMMddHHmmss")
                       def backupFile = "jenkins_backup_${timestamp}.tar.gz"
 

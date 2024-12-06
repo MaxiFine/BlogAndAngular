@@ -6,3 +6,32 @@ scp -i blog-app-kp.pem /mnt/c/Users/MaxwellAdomako/IdeaProjects/learnings/blog/.
 
 
 docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f BlogAndAngular/Dockerfile BlogAndAngular/
+
+
+COMPOSE FILE EDIT
+
+#services:
+#  # Spring boot application Service
+#  blog-app:
+##    build:
+##      context: .
+##      dockerfile: Dockerfile
+##    container_name: blog-dockerized-2
+##    working_dir: /app
+##    TESTING PULL IMAGE
+#    image: maxfine22/blog-app:2.5
+#    restart: on-failure:1
+#    ports:
+#      - 8027:8027
+##    env_file:
+##      - .env
+#    networks:
+#      - blog-app-network
+#
+#networks:
+#  blog-app-network:
+#    driver: bridge
+#
+#volumes:
+#  postgres_data:
+#    driver: local
