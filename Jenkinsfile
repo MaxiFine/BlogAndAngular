@@ -23,6 +23,7 @@ pipeline {
                         rm -rf BlogAndAngular
                     fi
                 '''
+                cleanWs()
             }
         }
 
@@ -35,12 +36,12 @@ pipeline {
             }
         }
 
-        stage('Verify Git Configuration') {
-            steps {
-                sh 'git config --global http.postBuffer 524288000' // Increase buffer
-                sh 'git config --global http.version HTTP/1.1'     // Set HTTP version to 1.1
-            }
-        }
+//         stage('Verify Git Configuration') {
+//             steps {
+//                 sh 'git config --global http.postBuffer 524288000' // Increase buffer
+//                 sh 'git config --global http.version HTTP/1.1'     // Set HTTP version to 1.1
+//             }
+//         }
 
         stage('Checkout Project') { // Keep this stage
             steps {
