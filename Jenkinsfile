@@ -42,33 +42,32 @@ pipeline {
             }
         }
 
-        stage('Build CLEAN') {
+        stage('Clean and Package Build') {
             steps {
-                dir('BlogAndAngular') {
-                    sh '''
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing"
-                            exit 1
-                        fi
-                        mvn clean
-                    '''
+                script {
+                    def cleanAndPackage = { projectDir ->
+                        dir(projectDir) {
+                            sh '''
+                                if [ ! -f "pom.xml" ]; then
+                                    echo "ERROR: pom.xml is missing"
+                                    exit 1
+                                fi
+                                echo "NOW CLENAING>>>>>>>??????????"
+                                mvn clean
+                                echo "NOW Packaging////////////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+                                mvn package
+                            '''
+                            echo "CLENAING and Packaging done#########################3"
+                        }
+                    }
+
+                    cleanAndPackage('BlogAndAngular')
                 }
             }
         }
 
-        stage('Build PACKAGE') {
-            steps {
-                dir('BlogAndAngular') {
-                    sh '''
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing"
-                            exit 1
-                        fi
-                        mvn package
-                    '''
-                }
-            }
-        }
+
+
 
         stage('Verify Files') {
             steps {
@@ -93,27 +92,46 @@ pipeline {
             }
         }
 
-        stage('Login to Docker Hub') {
+
+        stage('Login and Push Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '''
-                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                        '''
+                    def loginAndPushDockerImage = { credentialsId, imageName, imageTag ->
+                        withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh '''
+                                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                            '''
+                        }
+
+                        docker.withRegistry('https://index.docker.io/v1/', credentialsId) {
+                            docker.image("${imageName}:${imageTag}").push()
+                        }
                     }
+
+                    loginAndPushDockerImage(DOCKER_CREDENTIALS_ID, DOCKER_IMAGE_NAME, IMAGE_TAG)
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Update Docker Compose for Blog-App') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        docker.image("$DOCKER_IMAGE_NAME:$IMAGE_TAG").push()
+                    def updateComposeFile = { composeFile, serviceName, imageName, imageTag ->
+                        sh """
+                            echo "Updating docker-compose file for service: ${serviceName}..."
+                            sed -i '/^  ${serviceName}:/,/image:/s|image: ${imageName}:.*|image: ${imageName}:${imageTag}|' ${composeFile}
+                            echo "Updated ${serviceName} image to ${imageName}:${imageTag} in ${composeFile}"
+                        """
                     }
+
+                    // Call the function to update the `blog-app` service's image
+                    updateComposeFile('docker-compose.yml', 'blog-app', DOCKER_IMAGE_NAME, IMAGE_TAG)
                 }
             }
         }
+
+
+
 
         stage('Run Docker Container') {
             steps {
@@ -124,14 +142,11 @@ pipeline {
                     fi
                     docker run -d --name jenkins-built-container -p 8027:8027 $DOCKER_IMAGE_NAME:$IMAGE_TAG
                 '''
+                   echo "Test the application at $PROJECT_URL"
             }
         }
 
-        stage('Accessing the App Project') {
-            steps {
-                echo "Test the application at $PROJECT_URL"
-            }
-        }
+
 
      stage('Deployment On EC2') {
          steps {
