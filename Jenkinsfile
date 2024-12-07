@@ -133,94 +133,67 @@ pipeline {
             }
         }
 
-        stage('Deployment On EC2') {
-            steps {
-                sshagent(['blog-lab-ssh']) {
-                    script {
-                        def ec2Host = '13.42.38.132'
-                        def deployUser = 'ubuntu'
-                        def repoUrl = 'https://github.com/MaxiFine/BlogAndAngular.git'
-                        def repoName = 'BlogAndAngular'
+      stage('Deployment On EC2') {
+          steps {
+              sshagent(['blog-lab-ssh']) {
+                  script {
+                      def ec2Host = '13.42.38.132'
+                      def deployUser = 'ubuntu'
+                      def repoName = 'BlogAndAngular'
 
-                        // SSH into the EC2 instance and perform deployment
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
-                                rm -rf ~/${repoName} || true
-                                git clone ${repoUrl}
-                                cd ~/${repoName}
-                                docker-compose down || true
-                                docker-compose up -d
-                            '
-                        """
-                    }
+                      // Copy docker-compose file to EC2 instance
+                      sh """
+                          scp -o StrictHostKeyChecking=no docker-compose.yml ${deployUser}@${ec2Host}:~/${repoName}/docker-compose.yml
+                      """
+
+                      // SSH into the instance and run Docker Compose
+                      sh """
+                          ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
+                              cd ~/${repoName}
+                              docker-compose down || true
+                              docker-compose pull
+                              docker-compose up -d
+                          '
+                      """
+                  }
+              }
+          }
+      }
+
+    stage('Backup Jenkins Server to S3') {
+        steps {
+            script {
+                def s3Bucket = 'blog-lab-bucket'
+                def backupDir = '/home/jenkins/backups'
+                def jenkinsHome = '/home/jenkins'
+                def timestamp = new Date().format("yyyyMMddHHmmss")
+                def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+
+                // Ensure backup directory exists
+                sh "mkdir -p ${backupDir}"
+
+                // Create a temporary backup folder
+                sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
+
+                // Create a backup archive from the backup directory
+                sh "tar -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
+
+                echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
+
+                withAWS(credentials: 'blog-lab-accesskeys', region: 'us-east-2') {
+                    echo "Uploading file to S3..."
+                    s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
                 }
-            }
-        }
 
-        stage('Backup Jenkins Server to S3') {
-            steps {
-                script {
-                    try {
-                        def s3Bucket = 'blog-lab-bucket'
-                        def backupDir = '/home/jenkins/backups'
-                        def jenkinsHome = '/home/jenkins'
-                        def timestamp = new Date().format("yyyyMMddHHmmss")
-                        def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+                // Cleanup
+                sh "rm -f ${backupDir}/${backupFile}"
 
-                        // Ensure backup directory exists
-                        sh "mkdir -p ${backupDir}"
-
-                        // Create a temporary backup folder
-                        sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
-
-//                        // Create a backup archive from the backup directory  cd in to dir w
-//                        sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
-
-                          // Create a backup archive from the backup directory using tar instead of zip
-                          sh "tar -czvf jenkins_backup_${timestamp}.tar.gz -C ${backupDir} ."
-
-                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-
-
-                        // Upload to S3
-                        // cd in to workspace dir
-//                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-//                             sh "aws s3 cp ${backupDir}/${backupFile} s3://$s3Bucket/$backupFile"
-//                         }
-
-                          echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
-
-                        withAWS(credentials: 'blog-lab-accesskeys', region: 'us-east-2') {
-                            echo "Uploading file to S3..."
-                            s3Upload(bucket: 'blog-lab-bucket', file: $backupFile)
-                            echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW PUShed TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                            echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW PUSHed TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                        }
-
-                        echo "><<<<<<<<<<<<<<<<<<<<<<<<<<AFTER PUSING TO S333333333333333333333333333 TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                        echo "><<<<<<<<<<<<<<<<<<<<<<<<<<after TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-
-                        sh 'pwd'
-
-                        // Cleanup
-                        sh "rm -f ${backupDir}/${backupFile}"
-
-                        echo "Backup successful: ${backupFile}"
-                        echo "System clean up >>>>>><<<<<<<<<"
-                        sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
-                        sh 'docker system prune -f'
-                    } catch (Exception e) {
-                        echo "Backup failed: ${e.message}"
-                    }
-                }
+                echo "Backup successful: ${backupFile}"
+                sh "docker rmi -f $DOCKER_IMAGE_NAME:$IMAGE_TAG || true"
+                sh 'docker system prune -f'
             }
         }
     }
-
 
 
     post {

@@ -975,4 +975,27 @@ stage('Cleanup System') {
     }
 }
 
+ EC2 TYPE 2
+   stage('Deployment On EC2') {
+             steps {
+                 sshagent(['blog-lab-ssh']) {
+                     script {
+                         def ec2Host = '13.42.38.132'
+                         def deployUser = 'ubuntu'
+                         def repoUrl = 'https://github.com/MaxiFine/BlogAndAngular.git'
+                         def repoName = 'BlogAndAngular'
 
+                         // SSH into the EC2 instance and perform deployment
+                         sh """
+                             ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
+                                 rm -rf ~/${repoName} || true
+                                 git clone ${repoUrl}
+                                 cd ~/${repoName}
+                                 docker-compose down || true
+                                 docker-compose up -d
+                             '
+                         """
+                     }
+                 }
+             }
+         }
