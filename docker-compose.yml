@@ -21,9 +21,6 @@ services:
 
   # Spring boot application Service
   blog-app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
     container_name: jenkins-lab-deploy
     image: maxfine22/blog-app:1d8e699de5535d0b02e9c10d2bb09c0de2d55d8b
     environment:
