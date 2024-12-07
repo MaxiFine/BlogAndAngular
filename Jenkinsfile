@@ -143,7 +143,7 @@ pipeline {
 
                       // Copy docker-compose file to EC2 instance
                       sh """
-                          scp -o StrictHostKeyChecking=no docker-compose.yml ${deployUser}@${ec2Host}:~/${repoName}/docker-compose.yml
+                          scp -o StrictHostKeyChecking=no docker-compose.yml ${deployUser}@${ec2Host}:~/docker-compose.yml
                       """
 
                       // SSH into the instance and run Docker Compose
