@@ -999,3 +999,9 @@ stage('Cleanup System') {
                  }
              }
          }
+
+
+                               // Copy docker-compose file to EC2 instance
+         //                       sh """
+         //                           scp -o StrictHostKeyChecking=no $repoName/docker-compose.yml ${deployUser}@${ec2Host}:~/docker-compose.yml
+         //                       """
