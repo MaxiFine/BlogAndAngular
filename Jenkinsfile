@@ -182,15 +182,19 @@ pipeline {
                 def jenkinsHome = '/home/jenkins'
                 def timestamp = new Date().format("yyyyMMddHHmmss")
                 def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+                def tempBackupDir = '/home/jenkins/temp_backup'
 
                 // Ensure backup directory exists
                 sh "mkdir -p ${backupDir}"
+                sh "mkdir -p ${tempBackupDir}"
 
-//                 // Create a temporary backup folder
-//                 sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
+                // Copy workspace to a temporary directory
+                sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
+
+                echo "DONE COPYING FILES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 
                 // Create a backup archive from the backup directory
-                sh "tar -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
+                sh "tar --ignore-failed-read  -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
 
                 echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
 
