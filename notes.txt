@@ -35,3 +35,6 @@ COMPOSE FILE EDIT
 #volumes:
 #  postgres_data:
 #    driver: local
+
+
+aws s3api get-bucket-location --bucket blog-lab-bucket
