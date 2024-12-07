@@ -124,13 +124,16 @@ pipeline {
                         """
                     }
 
+                    echo "UPDATING COMPSE FILE?????????????????????//"
+
+                    // Define the path to the docker-compose file
+                    def composeFilePath = '/home/jenkins/workspace/lab-blog-pipe/BlogAndAngular/docker-compose.yml'
+
                     // Call the function to update the `blog-app` service's image
-                    updateComposeFile('docker-compose.yml', 'blog-app', DOCKER_IMAGE_NAME, IMAGE_TAG)
+                    updateComposeFile(composeFilePath, 'blog-app', DOCKER_IMAGE_NAME, IMAGE_TAG)
                 }
             }
         }
-
-
 
 
         stage('Run Docker Container') {
