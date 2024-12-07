@@ -15,7 +15,7 @@ pipeline {
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         SSH_KEY_ID = "blog-lab-ssh"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
-        AWS_DEFAULT_REGION = "us-east-2"
+        AWS_DEFAULT_REGION = "eu-east-2"
         APP_NAME = "jenkins-built-container"
         BLOG_ENV = credentials('blogEnv')
     }
@@ -216,7 +216,7 @@ pipeline {
 
                 echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
 
-                withAWS(credentials: 'blog-lab-accesskeys', region: 'us-east-2') {
+                withAWS(credentials:  AWS_ACCESS_KEY_ID, region: AWS_DEFAULT_REGION) {
                     echo "Uploading file to S3..."
                     s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
                 }
