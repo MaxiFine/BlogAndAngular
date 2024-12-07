@@ -186,9 +186,6 @@ pipeline {
                           echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 
 
-//                         // Create a backup archive from the backup directory using zip
-//                         sh "cd ${backupDir} && zip -r ${backupFile} workspace/*" // Zip the contents of the workspace
-
                         // Upload to S3
                         // cd in to workspace dir
 //                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
@@ -197,29 +194,15 @@ pipeline {
 
                           echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
 
-
-                        withAWS(credentials: "blog-lab-accesskeys", region: "us-east-2"){
-//                                             sh 'echo "Hello DevOps" > hello.txt'
-//                                             s3Upload (bucket: 'blog-lab-bucket ' , file: $backupFile)
-                                            s3Upload(bucket: 'blog-lab-bucket', file: $backupFile, verbose: true)
-
-                                          //  s3Download(file:'downloaded.txt', bucket:'your-bucket-name', path:'hello.txt',force:true)
-                                          //  sh "cat downloaded.txt"
-
                         withAWS(credentials: 'blog-lab-accesskeys', region: 'us-east-2') {
                             echo "Uploading file to S3..."
                             s3Upload(bucket: 'blog-lab-bucket', file: $backupFile)
                             echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW PUShed TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                             echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW PUSHed TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-
-
                         }
-
 
                         echo "><<<<<<<<<<<<<<<<<<<<<<<<<<AFTER PUSING TO S333333333333333333333333333 TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                         echo "><<<<<<<<<<<<<<<<<<<<<<<<<<after TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-
-
 
                         sh 'pwd'
 
