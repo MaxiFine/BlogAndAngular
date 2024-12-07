@@ -1,5 +1,6 @@
 def gitSha() {
     return sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+    gitSha = sh(script: 'git log -n 1 --pretty=format:"%H"', returnStdout: true).trim()
 }
 
 pipeline {
@@ -172,19 +173,26 @@ pipeline {
                         // Create a temporary backup folder
                         sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
 
-//                        // Create a backup archive from the backup directory
+//                        // Create a backup archive from the backup directory  cd in to dir w
 //                        sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
 
                           // Create a backup archive from the backup directory using tar instead of zip
-                          sh "tar -czvf jenkins_backup_${timestamp}.tar.gz -C /home/jenkins/backups ."
+                          sh "tar -czvf jenkins_backup_${timestamp}.tar.gz -C ${backupDir} ."
+
+                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                          echo "><<<<<<<<<<<<<<<<<<<<<<<<<<NNOW TO PUSH TO S3<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 
 
 //                         // Create a backup archive from the backup directory using zip
 //                         sh "cd ${backupDir} && zip -r ${backupFile} workspace/*" // Zip the contents of the workspace
 
                         // Upload to S3
+                        // cd in to workspace dir
                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                            sh "aws s3 cp ${backupFile} s3://$s3Bucket/$backupFile"
+                            sh "aws s3 cp ${backupDir}/${backupFile} s3://$s3Bucket/$backupFile"
                         }
 
                         // Cleanup
