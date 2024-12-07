@@ -133,32 +133,46 @@ pipeline {
             }
         }
 
-      stage('Deployment On EC2') {
-          steps {
-              sshagent(['blog-lab-ssh']) {
-                  script {
-                      def ec2Host = '13.42.38.132'
-                      def deployUser = 'ubuntu'
-                      def repoName = 'BlogAndAngular'
+     stage('Deployment On EC2') {
+         steps {
+             sshagent(['blog-lab-ssh']) {
+                 script {
+                     def ec2Host = '13.42.38.132'
+                     def deployUser = 'ubuntu'
+                     def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe/BlogAndAngular'
+                     def remotePath = "/home/${deployUser}"
 
-                      // Copy docker-compose file to EC2 instance
-                      sh """
-                          scp -o StrictHostKeyChecking=no docker-compose.yml ${deployUser}@${ec2Host}:~/${repoName}/docker-compose.yml
-                      """
+                     echo "Deploying to EC2 Host: ${ec2Host}"
+                     echo "Local Repo Path: ${localRepoPath}"
+                     echo "Remote Path: ${remotePath}"
 
-                      // SSH into the instance and run Docker Compose
-                      sh """
-                          ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
-                              cd ~/${repoName}
-                              docker-compose down || true
-                              docker-compose pull
-                              docker-compose up -d
-                          '
-                      """
-                  }
-              }
-          }
-      }
+                     // Ensure the local file exists before copying
+                     sh "ls -l ${localRepoPath}/docker-compose.yml"
+
+                     // Copy the file to the EC2 instance
+                     sh """
+                         scp -o StrictHostKeyChecking=no ${localRepoPath}/docker-compose.yml ${deployUser}@${ec2Host}:${remotePath}/docker-compose.yml
+                         echo "Docker Compose file copied successfully."
+                     """
+
+                     // SSH into the EC2 instance and run commands
+                     sh """
+                         ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
+                             cd ${remotePath}
+                             echo "Stopping existing containers..."
+                             docker-compose down || true
+                             echo "Pulling latest images..."
+                             docker-compose pull
+                             echo "Starting containers..."
+                             docker-compose up -d
+                             echo "Deployment successful."
+                         '
+                     """
+                 }
+             }
+         }
+     }
+
 
     stage('Backup Jenkins Server to S3') {
         steps {
