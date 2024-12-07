@@ -186,8 +186,8 @@ pipeline {
                 // Ensure backup directory exists
                 sh "mkdir -p ${backupDir}"
 
-                // Create a temporary backup folder
-                sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
+//                 // Create a temporary backup folder
+//                 sh "cp -r ${jenkinsHome}/workspace ${backupDir} || exit 0"
 
                 // Create a backup archive from the backup directory
                 sh "tar -czvf ${backupDir}/${backupFile} -C ${backupDir} ."
