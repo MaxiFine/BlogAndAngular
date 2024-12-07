@@ -1078,3 +1078,10 @@ stage('Update Docker Compose for Blog-App') {
         }
     }
 }
+
+
+WITH ENV
+withAWS(credentials: env.AWS_ACCESS_KEY_ID, region: env.AWS_DEFAULT_REGION) {
+    echo "Uploading file to S3..."
+    s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
+}

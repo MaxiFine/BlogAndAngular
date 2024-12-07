@@ -216,7 +216,7 @@ pipeline {
 
                 echo "Backup file>>>>>>>>>>>>>>: ${backupFile}"
 
-                withAWS(credentials:  AWS_ACCESS_KEY_ID, region: AWS_DEFAULT_REGION) {
+                withAWS(credentials:  'blog-lab-accesskeys', region: 'eu-west-2') {
                     echo "Uploading file to S3..."
                     s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
                 }
