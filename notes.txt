@@ -38,3 +38,15 @@ COMPOSE FILE EDIT
 
 
 aws s3api get-bucket-location --bucket blog-lab-bucket
+
+
+oneline command
+ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} "cd ${remotePath} && (docker-compose down || true) && docker-compose pull && docker-compose up -d"
+
+
+multiple but one cleaner code
+ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} \
+    "cd ${remotePath} && \
+    (docker-compose down || true) && \
+    docker-compose pull && \
+    docker-compose up -d"

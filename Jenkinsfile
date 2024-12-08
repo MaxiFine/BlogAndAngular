@@ -96,18 +96,6 @@ pipeline {
             }
         }
 
-        stage('Run Docker Container') {
-            steps {
-                sh '''
-                    if [ "$(docker ps -aq -f name=jenkins-built-container)" ]; then
-                        docker stop jenkins-built-container || true
-                        docker rm jenkins-built-container || true
-                    fi
-                    docker run -d --name jenkins-built-container -p 8027:8027 $DOCKER_IMAGE_NAME:$IMAGE_TAG
-                '''
-            }
-        }
-
      stage('Deployment On EC2') {
          steps {
              sshagent(['blog-lab-ssh']) {
@@ -116,7 +104,6 @@ pipeline {
                      def deployUser = 'ubuntu'
                      def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe/BlogAndAngular'
                      def remotePath = "/home/${deployUser}"
-
                      sh """
                          scp -o StrictHostKeyChecking=no ${localRepoPath}/docker-compose.yml ${deployUser}@${ec2Host}:${remotePath}/docker-compose.yml
                      """
