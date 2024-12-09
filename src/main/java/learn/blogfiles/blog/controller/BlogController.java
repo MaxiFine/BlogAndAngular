@@ -61,5 +61,11 @@ public class BlogController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
+
+    @GetMapping("/test")
+    public String returnString() {
+        String test = "Hello, this is a test response! for services";
+        return test;
+    }
 }
 
