@@ -22,7 +22,7 @@ services:
   # Spring boot application Service
   blog-app:
     container_name: jenkins-lab-deploy
-    image: maxfine22/blog-app:1d8e699de5535d0b02e9c10d2bb09c0de2d55d8b
+    image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
     environment:
        DATABASE_URL: ${SPRING_DATASOURCE_URL}
        DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}

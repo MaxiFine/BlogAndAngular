@@ -1383,3 +1383,20 @@ WORKS FOR THE NEW BUT WANTING TO MAKE THE DEPLOY ONE STATEMENT
              }
          }
      }
+
+     FETCHING ONLY LATEST COMMIT
+     withEnv(['GIT_TRACE=1', 'GIT_CURL_VERBOSE=1']) {
+         checkout([$class: 'GitSCM',
+                   branches: [[name: '*/main']],
+                   userRemoteConfigs: [[url: '<repository-url>']],
+                   extensions: [[$class: 'CloneOption', depth: 1, shallow: true, noTags: true, reference: '', timeout: 30]]
+         ])
+     }
+
+
+SHALOW FETCH
+checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: '<repository-url>']],
+          extensions: [[$class: 'CloneOption', depth: 1]]
+])
