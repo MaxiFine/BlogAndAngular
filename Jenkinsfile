@@ -8,11 +8,11 @@ pipeline {
     }
 
     environment {
-        DOCKER_CREDENTIALS_ID = "docker-hub-creds"
+        DOCKER_CREDENTIALS_ID = "dockerhub-creds"
         DOCKER_IMAGE_NAME = "maxfine22/blog-app"
         IMAGE_TAG = gitSha()
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
-        SSH_KEY_ID = "blog-lab-ssh"
+        SSH_KEY_ID = "blog-lab-accesskeys"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
         AWS_DEFAULT_REGION = "eu-east-2"
         APP_NAME = "jenkins-built-container"
@@ -26,11 +26,11 @@ pipeline {
             }
         }
 
-        stage('Checkout Project') {
-            steps {
-                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
-            }
-        }
+//         stage('Checkout Project') {
+//             steps {
+//                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+//             }
+//         }
 
         stage('Clean and Package Build') {
             steps {
