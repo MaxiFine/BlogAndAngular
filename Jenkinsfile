@@ -111,6 +111,8 @@ pipeline {
                          ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
                              cd ${remotePath}
                              docker-compose down || true
+                             # Remove unused images, networks, and volumes to free space
+                             docker system prune -af --volumes || true
                              docker-compose pull
                              docker-compose up -d
                          '
