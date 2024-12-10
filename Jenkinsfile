@@ -15,8 +15,6 @@ pipeline {
         SSH_KEY_ID = "blog-lab-accesskeys"
         AWS_ACCESS_KEY_ID = credentials("blog-lab-accesskeys")
         AWS_DEFAULT_REGION = "eu-east-2"
-        APP_NAME = "jenkins-built-container"
-        BLOG_ENV = credentials('blogEnv')
     }
 
     stages {
