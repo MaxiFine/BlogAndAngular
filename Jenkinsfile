@@ -59,13 +59,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('BlogAndAngular') {
+//                 dir('BlogAndAngular') {
                     script {
                         sh '''
                             docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
                         '''
                     }
-                }
+//                 }
             }
         }
 
@@ -95,7 +95,7 @@ pipeline {
                             sed -i '/^  ${serviceName}:/,/image:/s|image: ${imageName}:.*|image: ${imageName}:${imageTag}|' ${composeFile}
                         """
                     }
-                    def composeFilePath = '/home/jenkins/workspace/lab-blog-pipe/BlogAndAngular/docker-compose.yml'
+                    def composeFilePath = '/home/jenkins/workspace/lab-blog-pipe/docker-compose.yml'
                     updateComposeFile(composeFilePath, 'blog-app', DOCKER_IMAGE_NAME, IMAGE_TAG)
                 }
             }
@@ -107,7 +107,7 @@ pipeline {
                  script {
                      def ec2Host = '13.42.38.132'
                      def deployUser = 'ubuntu'
-                     def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe/BlogAndAngular'
+                     def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe'
                      def remotePath = "/home/${deployUser}"
                      sh """
                          scp -o StrictHostKeyChecking=no ${localRepoPath}/docker-compose.yml ${deployUser}@${ec2Host}:${remotePath}/docker-compose.yml
