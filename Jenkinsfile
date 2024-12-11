@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_CREDENTIALS_ID = "dockerhub-creds"
+        DOCKER_CREDENTIALS_ID = "docker-hub-creds"
         DOCKER_IMAGE_NAME = "maxfine22/blog-app"
         IMAGE_TAG = gitSha()
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
