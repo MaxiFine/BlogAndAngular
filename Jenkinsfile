@@ -24,29 +24,24 @@ pipeline {
             }
         }
 
+
 //         stage('Checkout Project') {
 //             steps {
-//                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [[name: '*/main']],
+//                     userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']],
+//                     extensions: [[$class: 'CloneOption', depth: 1]]
+//                 ])
 //             }
 //         }
-
-        stage('Checkout Project') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']],
-                    extensions: [[$class: 'CloneOption', depth: 1]]
-                ])
-            }
-        }
 
 
         stage('Clean and Package Build') {
             steps {
                 script {
-                    def cleanAndPackage = { projectDir ->
-                        dir(projectDir) {
+//                     def cleanAndPackage = { projectDir ->
+//                         dir(projectDir) {
                             sh '''
                                 if [ ! -f "pom.xml" ]; then
                                     echo "ERROR: pom.xml is missing"
@@ -55,9 +50,9 @@ pipeline {
                                 mvn clean
                                 mvn package
                             '''
-                        }
-                    }
-                    cleanAndPackage('BlogAndAngular')
+//                         }
+//                     }
+//                     cleanAndPackage('BlogAndAngular')
                 }
             }
         }
