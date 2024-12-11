@@ -24,11 +24,11 @@ pipeline {
             }
         }
 
-        stage('Checkout Project') {
-            steps {
-                sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
-            }
-        }
+//         stage('Checkout Project') {
+//             steps {
+//                 sh 'git clone https://github.com/MaxiFine/BlogAndAngular.git'
+//             }
+//         }
 
         stage('Clean and Package Build') {
             steps {

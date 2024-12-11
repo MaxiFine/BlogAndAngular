@@ -48,3 +48,10 @@ ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} \
     (docker-compose down || true) && \
     docker-compose pull && \
     docker-compose up -d"
+
+
+JENKINS FIX COMMMANDS WITH SERVICE FAILURE
+sudo chown -R jenkins:jenkins /var/lib/jenkins
+sudo systemctl start jenkins
+sudo chown -R jenkins:jenkins /var/lib/jenkins
+sudo systemctl start jenkins
