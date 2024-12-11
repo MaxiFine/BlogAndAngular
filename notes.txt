@@ -55,3 +55,9 @@ sudo chown -R jenkins:jenkins /var/lib/jenkins
 sudo systemctl start jenkins
 sudo chown -R jenkins:jenkins /var/lib/jenkins
 sudo systemctl start jenkins
+
+
+checkout error fix attempts
+git branch: 'main', url: 'https://github.com/your-repository.git', shallow: true
+
+checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']], extensions: [[$class: 'CloneOption', depth: 1]]])

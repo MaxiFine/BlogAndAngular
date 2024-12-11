@@ -30,6 +30,18 @@ pipeline {
 //             }
 //         }
 
+        stage('Checkout Project') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']],
+                    extensions: [[$class: 'CloneOption', depth: 1]]
+                ])
+            }
+        }
+
+
         stage('Clean and Package Build') {
             steps {
                 script {
