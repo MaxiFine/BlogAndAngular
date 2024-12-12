@@ -172,17 +172,17 @@ pipeline {
             }
         }
     }
-   }
+
 
     post {
-        success {
-            echo 'Pipeline finished successfully.'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-        always {
-            echo 'Pipeline execution completed.'
-        }
+            success {
+                echo 'Pipeline finished successfully.'
+            }
+            failure {
+                echo 'Pipeline failed.'
+            }
+            always {
+                echo 'Pipeline execution completed.'
+            }
     }
 }
