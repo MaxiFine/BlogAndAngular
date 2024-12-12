@@ -24,17 +24,31 @@ pipeline {
         }
 
 
+//         stage('Checkout Project') {
+//             steps {
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [[name: '*/main']],
+// //                     userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']],
+//                     userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
+//                     extensions: [[$class: 'CloneOption', depth: 1]]
+//                 ])
+//             }
+//         }
+
         stage('Checkout Project') {
             steps {
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
-//                     userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']],
                     userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
-                    extensions: [[$class: 'CloneOption', depth: 1]]
+                    extensions: [
+                        [$class: 'CloneOption', depth: 1, noTags: false, shallow: true]
+                    ]
                 ])
             }
         }
+
 
 
         stage('Clean and Package Build') {
