@@ -139,9 +139,14 @@ pipeline {
 
                 sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
 
+                echo "DONE COPYINGGGGGGGG~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
                 sh "tar --ignore-failed-read  -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
 
-                withAWS(credentials:  'blog-lab-accesskeys', region: 'eu-west-2') {
+                echo "NOW READY TO PUSH BACKUP TO S3????????????????????????????????????"
+
+
+                withAWS(credentials:  'lab-access-key', region: 'eu-west-2') {
                     echo "Uploading file to S3..."
                     s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
                 }
