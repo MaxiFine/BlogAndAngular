@@ -22,16 +22,16 @@ pipeline {
 
 
 
-        stage('Checkout Project') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
-                    extensions: [[$class: 'CloneOption', depth: 1, noTags: false, shallow: true]]
-                ])
-            }
-        }
+//         stage('Checkout Project') {
+//             steps {
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [[name: '*/main']],
+//                     userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
+//                     extensions: [[$class: 'CloneOption', depth: 1, noTags: false, shallow: true]]
+//                 ])
+//             }
+//         }
 
         stage('Clean and Package Build') {
             steps {
