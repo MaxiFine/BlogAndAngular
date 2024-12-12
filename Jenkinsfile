@@ -86,7 +86,7 @@ pipeline {
 
         stage('Deployment On EC2') {
             steps {
-                sshagent(['lab-access-key']) {
+                sshagent(['blog-lab-ssh']) {  // add the ssh key rather
                     script {
                         def ec2Host = '13.42.38.132'
                         def deployUser = 'ubuntu'
