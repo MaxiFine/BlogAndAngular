@@ -16,12 +16,12 @@ pipeline {
         AWS_DEFAULT_REGION = "eu-east-2"
     }
 
-    stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
+//     stages {
+//         stage('Clean Workspace') {
+//             steps {
+//                 cleanWs()
+//             }
+//         }
 
 
 //         stage('Checkout Project') {
@@ -35,19 +35,19 @@ pipeline {
 //                 ])
 //             }
 //         }
-
-        stage('Checkout Project') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
-                    extensions: [
-                        [$class: 'CloneOption', depth: 1, noTags: false, shallow: true]
-                    ]
-                ])
-            }
-        }
+//
+//         stage('Checkout Project') {
+//             steps {
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [[name: '*/main']],
+//                     userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
+//                     extensions: [
+//                         [$class: 'CloneOption', depth: 1, noTags: false, shallow: true]
+//                     ]
+//                 ])
+//             }
+//         }
 
 
 
