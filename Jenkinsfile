@@ -88,7 +88,7 @@ pipeline {
             steps {
                 sshagent(['blog-lab-ssh']) {  // add the ssh key rather
                     script {
-                        def ec2Host = '13.42.38.132'
+                        def ec2Host = '13.42.24.82'   // everytime the instance gets restarted remember to update the IP
                         def deployUser = 'ubuntu'
                         def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe'
                         def remotePath = "/home/${deployUser}"
