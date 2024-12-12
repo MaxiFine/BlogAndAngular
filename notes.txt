@@ -61,3 +61,68 @@ checkout error fix attempts
 git branch: 'main', url: 'https://github.com/your-repository.git', shallow: true
 
 checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/MaxiFine/BlogAndAngular.git']], extensions: [[$class: 'CloneOption', depth: 1]]])
+
+
+FIXING EC2 STAGE ERROR WHEN THE IP ADDRESS CHANGED
+
+COMMANDS
+sudo cp /home/max/pem/blog-lab-ec2.pem /var/lib/jenkins/.ssh/
+sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/blog-lab-ec2.pem
+sudo chmod 600 /var/lib/jenkins/.ssh/blog-lab-ec2.pem
+
+
+snippet to explitly use pemfile
+stage('Deploy to EC2') {
+    steps {
+        script {
+            def pemPath = '/var/lib/jenkins/.ssh/blog-lab-ec2.pem'
+            def ec2Host = '13.42.38.132'
+            def user = 'ubuntu'
+            def localFile = '/home/jenkins/workspace/lab-blog-pipe/docker-compose.yml'
+            def remotePath = '/home/ubuntu/docker-compose.yml'
+
+            // SCP Command
+            sh """
+            scp -i ${pemPath} -o StrictHostKeyChecking=no ${localFile} ${user}@${ec2Host}:${remotePath}
+            """
+
+            // SSH Command
+            sh """
+            ssh -i ${pemPath} -o StrictHostKeyChecking=no ${user}@${ec2Host} '
+                cd /home/ubuntu
+                docker-compose down || true
+                docker system prune -af --volumes || true
+                docker-compose pull
+                docker-compose up -d
+            '
+            """
+        }
+    }
+}
+
+
+NOT WORKING SNIPPET
+        stage('Deployment On EC2') {
+            steps {
+                sshagent(['blog-lab-ssh']) {  // add the ssh key rather
+                    script {
+                        def ec2Host = '13.42.24.82'   // everytime the instance gets restarted remember to update the IP
+                        def deployUser = 'ubuntu'
+                        def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe'
+                        def remotePath = "/home/${deployUser}"
+                        sh """
+                            scp -o StrictHostKeyChecking=no ${localRepoPath}/docker-compose.yml ${deployUser}@${ec2Host}:${remotePath}/docker-compose.yml
+                        """
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
+                                cd ${remotePath}
+                                docker-compose down || true
+                                docker system prune -af --volumes || true
+                                docker-compose pull
+                                docker-compose up -d
+                            '
+                        """
+                    }
+                }
+            }
+        }

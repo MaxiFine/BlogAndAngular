@@ -84,30 +84,37 @@ pipeline {
             }
         }
 
-        stage('Deployment On EC2') {
+        stage('Deploy to EC2') {
             steps {
-                sshagent(['blog-lab-ssh']) {  // add the ssh key rather
+                sshagent(['blog-lab-ssh']) {
                     script {
-                        def ec2Host = '13.42.24.82'   // everytime the instance gets restarted remember to update the IP
-                        def deployUser = 'ubuntu'
-                        def localRepoPath = '/home/jenkins/workspace/lab-blog-pipe'
-                        def remotePath = "/home/${deployUser}"
+                        def ec2Host = '13.42.24.82'
+                        def user = 'ubuntu'
+                        def localFile = '/home/jenkins/workspace/lab-blog-pipe/docker-compose.yml'
+                        def remotePath = '/home/ubuntu/docker-compose.yml'
+
+                       echo'<<<<<>>>>>>>>>>>>>>>>>>>>>>NOW ABOUT TO SSH>>>>>>>>>>>>>>>>>>>>'
+
+                        // SCP Command
                         sh """
-                            scp -o StrictHostKeyChecking=no ${localRepoPath}/docker-compose.yml ${deployUser}@${ec2Host}:${remotePath}/docker-compose.yml
+                        scp -o StrictHostKeyChecking=no ${localFile} ${user}@${ec2Host}:${remotePath}
                         """
+                        echo "SSH DONE >>>>>>>>>>>>>>>FILE COPY DONE>>>>>>>>>>"
+                        // SSH Command
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${deployUser}@${ec2Host} '
-                                cd ${remotePath}
-                                docker-compose down || true
-                                docker system prune -af --volumes || true
-                                docker-compose pull
-                                docker-compose up -d
-                            '
+                        ssh -o StrictHostKeyChecking=no ${user}@${ec2Host} '
+                            cd /home/ubuntu
+                            docker-compose down || true
+                            docker system prune -af --volumes || true
+                            docker-compose pull
+                            docker-compose up -d
+                        '
                         """
                     }
                 }
             }
         }
+
 
         stage('Backup Jenkins Server to S3') {
             steps {
