@@ -90,7 +90,7 @@ pipeline {
                     script {
                         def ec2Host = '13.42.24.82'
                         def user = 'ubuntu'
-                        def localFile = '/home/jenkins/workspace/lab-blog-pipe/docker-compose.yml'
+                        def localFile = '/home/jenkins/workspace/blog-pipe/docker-compose.yml'
                         def remotePath = '/home/ubuntu/docker-compose.yml'
 
                        echo'<<<<<>>>>>>>>>>>>>>>>>>>>>>NOW ABOUT TO SSH>>>>>>>>>>>>>>>>>>>>'
