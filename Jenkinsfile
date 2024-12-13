@@ -20,21 +20,6 @@ pipeline {
             }
         }
 
-
-        // run sonarqube test
-                stage('Run Sonarqube') {
-                    environment {
-                        scannerHome = tool 'sonarqube';
-                    }
-                    steps {
-                      withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-//                         sh "${scannerHome}/bin/sonar-scanner"
-                        sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
-                      }
-                    }
-                }
-
-
         stage('Clean and Package Build') {
             steps {
                 script {
@@ -49,6 +34,22 @@ pipeline {
                 }
             }
         }
+
+                // run sonarqube test
+                        stage('Run Sonarqube') {
+                            environment {
+                                scannerHome = tool 'sonarqube';
+                            }
+                            steps {
+                              withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+//                         sh "${scannerHome}/bin/sonar-scanner"
+//                                 sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
+                                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
+"
+                              }
+                            }
+                        }
+
 
         stage('Build Docker Image') {
             steps {
