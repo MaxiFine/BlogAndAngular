@@ -3,13 +3,10 @@ package learn.blogfiles.blog.controller;
 import learn.blogfiles.blog.dtos.BlogDto;
 import learn.blogfiles.blog.dtos.BlogDtoResponse;
 import learn.blogfiles.blog.handlers.NotFound404Exception;
-import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.service.BlogService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,22 +23,22 @@ public class BlogController {
 
     @PostMapping("/post")
     public ResponseEntity<String> create(@RequestBody BlogDto blog){
-        return new ResponseEntity<>(blogService.createBlog(blog), HttpStatus.CREATED.valueOf(201));
+        return new ResponseEntity<>(blogService.createBlog(blog), HttpStatus.CREATED);
     }
 
     @GetMapping("/all-posts")
     public ResponseEntity<Page<BlogDtoResponse>> getAllController(Pageable pageable){
-        return new ResponseEntity<>(blogService.getAllBlogs(pageable), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(blogService.getAllBlogs(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/get-details/{blogId}")
     public ResponseEntity<BlogDtoResponse> getDetailsController(@PathVariable String blogId){
-        return new ResponseEntity<>(blogService.getBlogDetails(blogId), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(blogService.getBlogDetails(blogId), HttpStatus.OK);
     }
 
     @GetMapping("/find-name")
     public ResponseEntity<BlogDtoResponse> getByNameContentController(@RequestParam String name){
-        return new ResponseEntity<>(blogService.getBlogNameContent(name), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(blogService.getBlogNameContent(name), HttpStatus.OK);
     }
 
 
@@ -63,9 +60,9 @@ public class BlogController {
     }
 
     @GetMapping("/test")
-    public String returnString() {
+    public ResponseEntity<String> returnString() {
         String test = "Hello, this is a test response! for services";
-        return test;
+        return ResponseEntity.status(HttpStatus.OK).body(test);
     }
 }
 
