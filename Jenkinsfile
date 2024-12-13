@@ -21,17 +21,18 @@ pipeline {
         }
 
 
+        // run sonarqube test
+                stage('Run Sonarqube') {
+                    environment {
+                        scannerHome = tool 'sonarqube';
+                    }
+                    steps {
+                      withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                      }
+                    }
+                }
 
-//         stage('Checkout Project') {
-//             steps {
-//                 checkout([
-//                     $class: 'GitSCM',
-//                     branches: [[name: '*/main']],
-//                     userRemoteConfigs: [[url: 'git@github.com:MaxiFine/BlogAndAngular.git']],
-//                     extensions: [[$class: 'CloneOption', depth: 1, noTags: false, shallow: true]]
-//                 ])
-//             }
-//         }
 
         stage('Clean and Package Build') {
             steps {
