@@ -45,7 +45,7 @@ pipeline {
 //                         sh "${scannerHome}/bin/sonar-scanner"
 //                                 sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
                                 sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
-"
+
                               }
                             }
                         }
