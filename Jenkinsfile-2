@@ -1,3 +1,13 @@
+stage ("Quality Gate") {
+
+    steps {
+        timeout(time: 2, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
+
+
 def gitSha() {
     return sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 }
