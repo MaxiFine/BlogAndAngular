@@ -52,11 +52,24 @@ pipeline {
                               withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
 //                         sh "${scannerHome}/bin/sonar-scanner"
 //                                 sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
-                                //sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
-                                sh "mvn clean package org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
+                                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
+//                                 sh "mvn clean package org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
 
                               }
                             }
+                        }
+
+                        stage(' Sonarqube Quality Gate') {
+                                    steps {
+                                        script {
+                                            timeout(time: 2, unit: 'MINUTES') { // Wait for quality gate result
+                                                def qualityGate = waitForQualityGate()
+                                                if (qualityGate.status != 'OK') {
+                                                    error "Pipeline failed due to Quality Gate failure: ${qualityGate.status}"
+                                                }
+                                            }
+                                        }
+                                    }
                         }
 
 
