@@ -22,9 +22,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.createComment(blogId, commentDto));
     }
 
-    @GetMapping("/test")
-    public String returnString() {
-        String test = "Hello, this is a test response! for services";
-        return test;
-    }
+//    @GetMapping("/test")
+//    public String returnString() {
+//        String test = "Hello, this is a test response! for services";
+//        return test;
+//    }
 }

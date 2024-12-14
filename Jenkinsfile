@@ -27,15 +27,18 @@ pipeline {
         stage('Clean and Package Build') {
             steps {
                 script {
-                    sh '''
-                        if [ ! -f "pom.xml" ]; then
-                            echo "ERROR: pom.xml is missing"
-                            exit 1
-                        fi
-                        mvn clean
-                        mvn package
-                    '''
+//                     sh '''
+//                         if [ ! -f "pom.xml" ]; then
+//                             echo "ERROR: pom.xml is missing"
+//                             exit 1
+//                         fi
+//                         mvn clean
+//                         mvn package
+//                     '''
+//                  USING METHOD AND INVOCATION TOGETHER
                     hellowWorld()
+                    runMaven("clean")
+                    mavenUtils.runMaven("package")
                 }
             }
         }
@@ -49,7 +52,8 @@ pipeline {
                               withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
 //                         sh "${scannerHome}/bin/sonar-scanner"
 //                                 sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
-                                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
+                                //sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
+                                sh "mvn clean package org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
 
                               }
                             }
@@ -59,9 +63,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-//                     sh '''
-// //                         docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
-// //                     '''
                     buildDockerImage(env.DOCKER_IMAGE_NAME, env.IMAGE_TAG, env.DOCKERFILE)
                 }
             }
@@ -70,14 +71,16 @@ pipeline {
         stage('Login and Push Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '''
-                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                        '''
-                    }
-                    sh '''
-                        docker push $DOCKER_IMAGE_NAME:$IMAGE_TAG
-                    '''
+//                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                         sh '''
+//                             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+//                         '''
+//                     }
+//                     sh '''
+//                         docker push $DOCKER_IMAGE_NAME:$IMAGE_TAG
+//                     '''
+                    // using method call type
+                    dockerUtilities.loginAndPushDockerImage(env.DOCKER_CREDENTIALS_ID, env.DOCKER_IMAGE_NAME, env.IMAGE_TAG)
                 }
             }
         }
@@ -127,24 +130,24 @@ pipeline {
 
         stage('Backup Jenkins Server to S3') {
             steps {
-                script {
-                    def s3Bucket = 'blog-lab-bucket'
-                    def backupDir = '/home/jenkins/backups'
-                    def jenkinsHome = '/home/jenkins'
-                    def timestamp = new Date().format("yyyyMMddHHmmss")
-                    def backupFile = "jenkins_backup_${timestamp}.tar.gz"
-                    def tempBackupDir = '/home/jenkins/temp_backup'
-
-                    sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
-
-                    sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
-
-                    withAWS(credentials:  'lab-access-key', region: 'eu-west-2') {
-                        s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
-                    }
+                script {  // just testing libraries
+//                     def s3Bucket = 'blog-lab-bucket'
+//                     def backupDir = '/home/jenkins/backups'
+//                     def jenkinsHome = '/home/jenkins'
+//                     def timestamp = new Date().format("yyyyMMddHHmmss")
+//                     def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+//                     def tempBackupDir = '/home/jenkins/temp_backup'
+//
+//                     sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
+//
+//                     sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
+//
+//                     withAWS(credentials:  'lab-access-key', region: 'eu-west-2') {
+//                         s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
+//                     }
 
                     // Cleanup Backup Files
-                    sh "rm -f ${backupDir}/${backupFile}"
+//                     sh "rm -f ${backupDir}/${backupFile}"
                     sh 'docker system prune -f'
                 }
             }
