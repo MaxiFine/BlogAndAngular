@@ -11,6 +11,7 @@ pipeline {
         PROJECT_URL = "http://localhost:8027/api/v1/blog/all-posts"
         AWS_ACCESS_KEY_ID = credentials("lab-access-key")
         AWS_DEFAULT_REGION = "eu-west-2"
+        DOCKERFILE = "Dockerfile"
     }
 
     stages {
@@ -18,6 +19,7 @@ pipeline {
             steps {
                 script {
                     env.IMAGE_TAG = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    hellowWorld()
                 }
             }
         }
@@ -33,6 +35,7 @@ pipeline {
                         mvn clean
                         mvn package
                     '''
+                    hellowWorld()
                 }
             }
         }
@@ -56,9 +59,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh '''
-                        docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
-                    '''
+//                     sh '''
+// //                         docker build -t $DOCKER_IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
+// //                     '''
+                    buildDockerImage(env.DOCKER_IMAGE_NAME, env.IMAGE_TAG, env.DOCKERFILE)
                 }
             }
         }
