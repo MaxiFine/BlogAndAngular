@@ -127,21 +127,21 @@ pipeline {
 
         stage('Backup Jenkins Server to S3') {
             steps {
-                script {
-                    def s3Bucket = 'blog-lab-bucket'
-                    def backupDir = '/home/jenkins/backups'
-                    def jenkinsHome = '/home/jenkins'
-                    def timestamp = new Date().format("yyyyMMddHHmmss")
-                    def backupFile = "jenkins_backup_${timestamp}.tar.gz"
-                    def tempBackupDir = '/home/jenkins/temp_backup'
-
-                    sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
-
-                    sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
-
-                    withAWS(credentials:  'lab-access-key', region: 'eu-west-2') {
-                        s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
-                    }
+                script {  // just testing libraries
+//                     def s3Bucket = 'blog-lab-bucket'
+//                     def backupDir = '/home/jenkins/backups'
+//                     def jenkinsHome = '/home/jenkins'
+//                     def timestamp = new Date().format("yyyyMMddHHmmss")
+//                     def backupFile = "jenkins_backup_${timestamp}.tar.gz"
+//                     def tempBackupDir = '/home/jenkins/temp_backup'
+//
+//                     sh "cp -r ${jenkinsHome}/workspace/* ${tempBackupDir}/"
+//
+//                     sh "tar --ignore-failed-read -czvf ${backupDir}/${backupFile} -C ${tempBackupDir} ."
+//
+//                     withAWS(credentials:  'lab-access-key', region: 'eu-west-2') {
+//                         s3Upload(bucket: s3Bucket, file: "${backupDir}/${backupFile}")
+//                     }
 
                     // Cleanup Backup Files
                     sh "rm -f ${backupDir}/${backupFile}"
