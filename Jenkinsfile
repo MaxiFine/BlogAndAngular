@@ -1,3 +1,5 @@
+@Library("max-shared-libraries") _
+
 pipeline {
     agent {
         label 'agent1'
