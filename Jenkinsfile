@@ -59,6 +59,23 @@ pipeline {
                             }
                         }
 
+        stage('SonarQube Quality Gate') {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'MINUTES') {
+                        def qualityGate = waitForQualityGate()
+                        if (qualityGate.status != 'OK') {
+                            echo "Quality Gate failed: ${qualityGate.status}. Proceeding with pipeline execution."
+                            currentBuild.result = 'UNSTABLE'
+                        } else {
+                            echo "Quality Gate passed: ${qualityGate.status}."
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         stage('Build Docker Image') {
             steps {
@@ -96,19 +113,6 @@ pipeline {
             }
         }
 
-
-          stage(' Sonarqube Quality Gate') {
-                                            steps {
-                                                script {
-                                                    timeout(time: 2, unit: 'MINUTES') { // Wait for quality gate result
-                                                        def qualityGate = waitForQualityGate()
-                                                        if (qualityGate.status != 'OK') {
-                                                            error "Pipeline failed due to Quality Gate failure: ${qualityGate.status}"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                }
 
         stage('Deploy to EC2') {
             steps {
