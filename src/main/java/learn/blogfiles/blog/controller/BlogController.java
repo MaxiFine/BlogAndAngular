@@ -59,10 +59,10 @@ public class BlogController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> returnString() {
-        String test = "Hello, this is a test response! for services";
-        return ResponseEntity.status(HttpStatus.OK).body(test);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity<String> returnString() {
+//        String test = "Hello, this is a test response! for services";
+//        return ResponseEntity.status(HttpStatus.OK).body(test);
+//    }
 }
 
