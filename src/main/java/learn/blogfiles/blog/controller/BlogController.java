@@ -23,29 +23,30 @@ public class BlogController {
 
     @PostMapping("/post")
     public ResponseEntity<String> create(@RequestBody BlogDto blog){
-        return new ResponseEntity<>(blogService.createBlog(blog), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(blogService.createBlog(blog));
     }
 
     @GetMapping("/all-posts")
     public ResponseEntity<Page<BlogDtoResponse>> getAllController(Pageable pageable){
-        return new ResponseEntity<>(blogService.getAllBlogs(pageable), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogs(pageable));
     }
 
     @GetMapping("/get-details/{blogId}")
     public ResponseEntity<BlogDtoResponse> getDetailsController(@PathVariable String blogId){
-        return new ResponseEntity<>(blogService.getBlogDetails(blogId), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(blogService.getBlogDetails(blogId));
     }
 
     @GetMapping("/find-name")
     public ResponseEntity<BlogDtoResponse> getByNameContentController(@RequestParam String name){
-        return new ResponseEntity<>(blogService.getBlogNameContent(name), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(blogService.getBlogNameContent(name));
     }
 
 
     @PutMapping("/update-blog/{blogId}")
     public ResponseEntity<BlogDtoResponse> updateController(@RequestBody BlogDto dto, @PathVariable String blogId){
         BlogDtoResponse newUpdate = blogService.updateBlog(dto, blogId);
-        return new ResponseEntity<>(newUpdate, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(newUpdate);
+
     }
 
     @PatchMapping("/like/{postId}")
@@ -59,10 +60,5 @@ public class BlogController {
         }
     }
 
-//    @GetMapping("/test")
-//    public ResponseEntity<String> returnString() {
-//        String test = "Hello, this is a test response! for services";
-//        return ResponseEntity.status(HttpStatus.OK).body(test);
-//    }
 }
 
