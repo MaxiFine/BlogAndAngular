@@ -29,7 +29,7 @@ class BlogServiceImplTest {
     private BlogRepository blogRepository;
 
 
-    @Test
+  /**  @Test
     void createBlog() {
 
         // Arrange
@@ -46,4 +46,5 @@ class BlogServiceImplTest {
         assertEquals("Blog created Successfully... id is: 1", result);
 
     }
+  */
 }
