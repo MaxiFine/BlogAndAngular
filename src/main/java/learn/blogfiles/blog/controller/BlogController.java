@@ -26,15 +26,18 @@ public class BlogController {
         return ResponseEntity.status(HttpStatus.CREATED).body(blogService.createBlog(blog));
     }
 
+
     @GetMapping("/all-posts")
     public ResponseEntity<Page<BlogDtoResponse>> getAllController(Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(blogService.getAllBlogs(pageable));
     }
 
+
     @GetMapping("/get-details/{blogId}")
     public ResponseEntity<BlogDtoResponse> getDetailsController(@PathVariable String blogId){
         return ResponseEntity.status(HttpStatus.OK).body(blogService.getBlogDetails(blogId));
     }
+
 
     @GetMapping("/find-name")
     public ResponseEntity<BlogDtoResponse> getByNameContentController(@RequestParam String name){
@@ -48,6 +51,7 @@ public class BlogController {
         return ResponseEntity.status(HttpStatus.OK).body(newUpdate);
 
     }
+
 
     @PatchMapping("/like/{postId}")
     public ResponseEntity<String> likePost(@PathVariable String postId) {

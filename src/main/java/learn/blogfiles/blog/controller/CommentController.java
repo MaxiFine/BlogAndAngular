@@ -23,5 +23,4 @@ public class CommentController {
             @PathVariable String blogId, @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(commentService.createComment(blogId, commentDto));
     }
-
 }
