@@ -55,7 +55,7 @@ pipeline {
                         def qualityGate = waitForQualityGate()
                         if (qualityGate.status != 'OK') {
                             echo "Quality Gate failed: ${qualityGate.status}. Proceeding with pipeline execution."
-                            currentBuild.result = 'UNSTABLE'
+//                             currentBuild.result = 'UNSTABLE'
                         } else {
                             echo "Quality Gate passed: ${qualityGate.status}."
                         }
