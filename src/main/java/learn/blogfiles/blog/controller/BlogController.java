@@ -53,7 +53,6 @@ public class BlogController {
     public ResponseEntity<String> likePost(@PathVariable String postId) {
         try {
             blogService.likePost(postId);
-            System.out.println(postId);
             return ResponseEntity.ok("Post liked successfully.");
         } catch (NotFound404Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());

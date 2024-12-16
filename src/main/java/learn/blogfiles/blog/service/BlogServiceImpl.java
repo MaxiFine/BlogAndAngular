@@ -21,11 +21,12 @@ public class BlogServiceImpl implements BlogService{
     private final BlogRepository blogRepository;
     private final BlogMapper blogMapper;
 
+    private  final String notFound = "The blogId does not exists";
+
 
     @Override
     public String createBlog(BlogDto blogDto) {
       BlogEntity blog = blogMapper.mapToBlogEntity(blogDto);
-//      BlogDtoResponse response = blogMapper.mapBlogDtoResponse(blog);
        blogRepository.save(blog);
        return "Blog created Successfully... id is: " + blog.getBlogId();
     }
@@ -45,10 +46,10 @@ public class BlogServiceImpl implements BlogService{
     public BlogDtoResponse getBlogDetails(String blogId) {
         Optional<BlogEntity> optionalBlog = blogRepository.findById(blogId);
         if (optionalBlog.isEmpty()) {
-            throw new NotFound404Exception("The blogId does not exists");
+            throw new NotFound404Exception(notFound);
         }else {
             BlogEntity blog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
+                    .orElseThrow(() -> new NotFound404Exception(notFound));
             return blogMapper.mapBlogDtoResponse(blog);
         }
     }
@@ -58,10 +59,9 @@ public class BlogServiceImpl implements BlogService{
     public BlogDtoResponse getBlogNameContent(String name) {
         Optional<BlogEntity> optionalBlog = Optional.ofNullable(blogRepository.byName(name));
         if (optionalBlog.isEmpty()) {
-            throw new NotFound404Exception("The blogId does not exists");
+            throw new NotFound404Exception(notFound);
         }else {
             BlogEntity blog = blogRepository.byName(name);
-//                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
             return blogMapper.mapBlogDtoResponse(blog);
         }
     }
@@ -70,7 +70,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public BlogDtoResponse updateBlog(BlogDto dto, String blogId) {
         BlogEntity optionalBlog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new NotFound404Exception("The blogId does not exists"));
+                    .orElseThrow(() -> new NotFound404Exception(notFound));
         return updaterBlog(dto, optionalBlog);
     }
 
@@ -90,7 +90,6 @@ public class BlogServiceImpl implements BlogService{
         BlogEntity blog = blogRepository.findById(postId).orElseThrow(
                 () -> new NotFound404Exception("The blog with ID " + postId + " was not found."));
         blog.setLikeCounts(blog.getLikeCounts() + 1);
-        System.out.println(blog.getLikeCounts());
         blogRepository.save(blog);
     }
 }
