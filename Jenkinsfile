@@ -28,7 +28,6 @@ pipeline {
             steps {
                 script {
                   // USING METHOD AND INVOCATION TOGETHER
-                    hellowWorld()
                     runMaven("clean")
                     mavenUtils.runMaven("package")
                 }
