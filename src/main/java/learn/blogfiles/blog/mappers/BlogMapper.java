@@ -11,7 +11,7 @@ public class BlogMapper {
 
     public BlogEntity mapToBlogEntity(BlogDto blogDto){
         return BlogEntity.builder()
-                .name(blogDto.name())  // Use getter for content
+                .name(blogDto.name())
                 .content(blogDto.content())
                 .postedBy(blogDto.postedBy())
                 .image(blogDto.image())

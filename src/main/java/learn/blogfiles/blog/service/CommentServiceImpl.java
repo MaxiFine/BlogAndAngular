@@ -9,10 +9,8 @@ import learn.blogfiles.blog.model.Comment;
 import learn.blogfiles.blog.repository.BlogRepository;
 import learn.blogfiles.blog.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
