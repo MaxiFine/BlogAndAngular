@@ -21,7 +21,7 @@ public class BlogServiceImpl implements BlogService{
     private final BlogRepository blogRepository;
     private final BlogMapper blogMapper;
 
-    private  final String notFound = "The blogId does not exists";
+    private static final String NOT_FOUND = "The blogId does not exists";
 
 
     @Override
@@ -46,10 +46,10 @@ public class BlogServiceImpl implements BlogService{
     public BlogDtoResponse getBlogDetails(String blogId) {
         Optional<BlogEntity> optionalBlog = blogRepository.findById(blogId);
         if (optionalBlog.isEmpty()) {
-            throw new NotFound404Exception(notFound);
+            throw new NotFound404Exception(NOT_FOUND);
         }else {
             BlogEntity blog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new NotFound404Exception(notFound));
+                    .orElseThrow(() -> new NotFound404Exception(NOT_FOUND));
             return blogMapper.mapBlogDtoResponse(blog);
         }
     }
@@ -59,7 +59,7 @@ public class BlogServiceImpl implements BlogService{
     public BlogDtoResponse getBlogNameContent(String name) {
         Optional<BlogEntity> optionalBlog = Optional.ofNullable(blogRepository.byName(name));
         if (optionalBlog.isEmpty()) {
-            throw new NotFound404Exception(notFound);
+            throw new NotFound404Exception(NOT_FOUND);
         }else {
             BlogEntity blog = blogRepository.byName(name);
             return blogMapper.mapBlogDtoResponse(blog);
@@ -70,7 +70,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public BlogDtoResponse updateBlog(BlogDto dto, String blogId) {
         BlogEntity optionalBlog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new NotFound404Exception(notFound));
+                    .orElseThrow(() -> new NotFound404Exception(NOT_FOUND));
         return updaterBlog(dto, optionalBlog);
     }
 
