@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/comments")
 @RequiredArgsConstructor
-@CrossOrigin
+/**
+ * @CrossOrigin commenting it out for later implementations
+ **/
 public class CommentController {
 
     private final CommentService commentService;
