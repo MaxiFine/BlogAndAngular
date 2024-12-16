@@ -34,31 +34,30 @@ pipeline {
             }
         }
 
-                // run sonarqube test
-                        stage('Run Sonarqube') {
-
-                            steps {
+                // run sonarqube ANALYSIS
+            stage('Run Sonarqube') {
+                      steps {
                               withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
                                 sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
                               }
                             }
                         }
 
-        stage('SonarQube Quality Gate') {
-            steps {
-                script {
-                    timeout(time: 1, unit: 'MINUTES') {
-                        def qualityGate = waitForQualityGate()
-                        if (qualityGate.status != 'OK') {
-                            echo "Quality Gate failed: ${qualityGate.status}. Proceeding with pipeline execution."
+            stage('SonarQube Quality Gate') {
+                steps {
+                    script {
+                        timeout(time: 1, unit: 'MINUTES') {
+                            def qualityGate = waitForQualityGate()
+                            if (qualityGate.status != 'OK') {
+                                echo "Quality Gate failed: ${qualityGate.status}. Proceeding with pipeline execution."
 //                             currentBuild.result = 'UNSTABLE'
-                        } else {
-                            echo "Quality Gate passed: ${qualityGate.status}."
+                            } else {
+                                echo "Quality Gate passed: ${qualityGate.status}."
+                            }
                         }
                     }
                 }
             }
-        }
 
 
 
