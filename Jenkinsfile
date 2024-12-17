@@ -12,6 +12,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials("lab-access-key")
         AWS_DEFAULT_REGION = "eu-west-2"
         DOCKERFILE = "Dockerfile"
+        ENVFILE =  credentials("blogEnv")
     }
 
     stages {
@@ -23,6 +24,21 @@ pipeline {
                 }
             }
         }
+
+          stage('Load Environment Variables') {
+                    steps {
+                        script {
+                            // Read .env file and export variables
+                            def envFile = readFile "/mnt/c/Users/MaxwellAdomako/IdeaProjects/learnings/blog/.env"
+                            envFile.split('\n').each { line ->
+                                def keyValue = line.tokenize('=')
+                                if (keyValue.size() == 2) {
+                                    env."${keyValue[0].trim()}" = keyValue[1].trim()
+                                }
+                            }
+                        }
+                    }
+                }
 
         stage('Clean and Package Build') {
             steps {
