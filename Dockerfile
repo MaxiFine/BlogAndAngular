@@ -1,8 +1,9 @@
 # Stage 1: Build the application
 FROM maven:3-eclipse-temurin-17-alpine AS build
 WORKDIR /app
-COPY pom.xml /app
-COPY src /app
+COPY . .
+#COPY pom.xml /app
+#COPY src /app
 #COPY .env /app
 #RUN mvn dependency:go-offline
 RUN mvn clean package -DskipTests
