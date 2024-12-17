@@ -1,5 +1,6 @@
 #
 services:
+
   # Spring boot application Service
   blog-app:
     container_name: jenkins-lab-deploy
@@ -8,12 +9,13 @@ services:
        DATABASE_URL: ${SPRING_DATASOURCE_URL}
        DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
        DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+       DATABASE_PORT: ${DB_PORT}
     ports:
       - 8027:8027
     env_file:
       - .env
-    depends_on:
-      - postgres_data
+#    depends_on:  NOW USING REMOTE DB SO NOT REQUIRED
+#      - postgres_data
     restart: on-failure:3
     networks:
       - blog-app-network
@@ -22,6 +24,6 @@ networks:
   blog-app-network:
     driver: bridge
 
-volumes:
-  postgres_data:
-    driver: local
+#volumes:
+#  postgres_data:
+#    driver: local
