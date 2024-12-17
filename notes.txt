@@ -151,3 +151,21 @@ NOT WORKING SNIPPET
                 }
               }
             }
+
+COMPOSE CONFIGS FOR POSTGRES DB
+#   Database Service
+#  postgres_data:
+#    container_name: blog_app_db
+#    image: postgres:latest
+#    environment:
+#      POSTGRES_USER: ${PG_USER}
+#      POSTGRES_PASSWORD: ${PG_PASS}
+#      PG_DATA: ${PG_DATA}
+#      POSTGRES_DB: ${PG_DB}
+#    volumes:
+#      - ${SOURCE_VOLUME}:/var/lib/postgresql/data
+#    ports:
+#      - ${DB_PORT}
+#    networks:
+#      - ${NETWORK}
+#    restart: on-failure:3
