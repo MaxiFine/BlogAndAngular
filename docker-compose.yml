@@ -5,7 +5,7 @@ services:
   blog-app:
     container_name: jenkins-lab-deploy
     image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
-#    image: jenkins-build:2.4
+#    image: jenkins-build:2.6
 #    environment:
 #       DATABASE_URL: ${SPRING_DATASOURCE_URL}
 #       DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
