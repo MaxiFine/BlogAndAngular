@@ -169,3 +169,20 @@ COMPOSE CONFIGS FOR POSTGRES DB
 #    networks:
 #      - ${NETWORK}
 #    restart: on-failure:3
+
+
+COPYING VALUES FROM ENV
+ stage('Load Environment Variables') {
+                    steps {
+                        script {
+                            // Read .env file and export variables
+                            def envFile = readFile "/mnt/c/Users/MaxwellAdomako/IdeaProjects/learnings/blog/.env"
+                            envFile.split('\n').each { line ->
+                                def keyValue = line.tokenize('=')
+                                if (keyValue.size() == 2) {
+                                    env."${keyValue[0].trim()}" = keyValue[1].trim()
+                                }
+                            }
+                        }
+                    }
+                }
