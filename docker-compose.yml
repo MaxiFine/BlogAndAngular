@@ -1,7 +1,5 @@
 #
 services:
-  postgres:
-
 
   # Spring boot application Service
   blog-app:
