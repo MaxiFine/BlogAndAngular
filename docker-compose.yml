@@ -5,11 +5,12 @@ services:
   blog-app:
     container_name: jenkins-lab-deploy
     image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
-    environment:
-       DATABASE_URL: ${SPRING_DATASOURCE_URL}
-       DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-       DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-       DATABASE_PORT: ${DB_PORT}
+#    image: jenkins-build:2.4
+#    environment:
+#       DATABASE_URL: ${SPRING_DATASOURCE_URL}
+#       DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#       DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#       DATABASE_PORT: ${DB_PORT}
     ports:
       - 8027:8027
     env_file:

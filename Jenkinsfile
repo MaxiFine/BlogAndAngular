@@ -13,6 +13,9 @@ pipeline {
         AWS_DEFAULT_REGION = "eu-west-2"
         DOCKERFILE = "Dockerfile"
         ENVFILE =  credentials("blogEnv")
+        JENKINS_PATH = "/home/jenkins/workspace/blog-pipe/"
+        HOST_PATH = "/mnt/c/Users/MaxwellAdomako/IdeaProjects/learnings/blog/.env"
+
     }
 
     stages {
