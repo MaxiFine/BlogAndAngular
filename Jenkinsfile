@@ -38,7 +38,7 @@ pipeline {
                 script {
                   // USING METHOD AND INVOCATION TOGETHER
                     runMaven("clean")
-                    mavenUtils.runMaven("package")
+                    mavenUtils.runMavenCommand("package")
                 }
             }
         }
