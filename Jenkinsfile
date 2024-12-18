@@ -1,5 +1,7 @@
 @Library("max-shared-libraries") _
 
+// CLEAN UP JENKINS AND USE THE NEW CHANGES IN PIPELINE
+
 pipeline {
     agent {
         label 'agent1'
@@ -24,6 +26,7 @@ pipeline {
                 script {
                     env.IMAGE_TAG = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     hellowWorld()
+                    echo "The gitSha is...  ${IMAGE_TAG}"
                 }
             }
         }
