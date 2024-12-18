@@ -1,23 +1,12 @@
-#
 services:
-
   # Spring boot application Service
   blog-app:
     container_name: jenkins-lab-deploy
     image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
-#    AVOIDING DUPLICATION WHEN PASSING ENV FILE
-#    image: jenkins-build:2.6
-#    environment:
-#       DATABASE_URL: ${SPRING_DATASOURCE_URL}
-#       DATABASE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-#       DATABASE_USER_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-#       DATABASE_PORT: ${DB_PORT}
     ports:
       - 8027:8027
     env_file:
       - .env
-#    depends_on:  NOW USING REMOTE DB SO NOT REQUIRED
-#      - postgres_data
     restart: on-failure:3
     networks:
       - blog-app-network
@@ -25,7 +14,3 @@ services:
 networks:
   blog-app-network:
     driver: bridge
-
-#volumes:
-#  postgres_data:
-#    driver: local
