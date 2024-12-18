@@ -37,8 +37,8 @@ pipeline {
             steps {
                 script {
                   // USING METHOD AND INVOCATION TOGETHER
-                    runMaven("clean")
-                    mavenUtils.runMavenCommand("package")
+                    mavenUtility.runMaven("clean")
+                    mavenUtility.runMavenCommand("package")
                 }
             }
         }
@@ -162,3 +162,6 @@ pipeline {
         }
     }
 }
+
+
+// NEXT CHECK IF THERE'S A CHANGE IN SRC DIR THEN DO DOCKER BUILD, ELSE SKIP BUILDS TO POST STAGE
