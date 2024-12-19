@@ -96,10 +96,10 @@ pipeline {
         stage('Update Docker Compose for Blog-App') {
             steps {
                 script {
-                    def composeFilePath = '/root/jenkins/workspace/blog-pipe/docker-compose.yml'
+                    def composeFilePath = '/root/jenkins/workspace/linode-blog/docker-compose.yml'
                     echo "CHCKING FILE PATH>>>>>>>>>>>>>>>>>>>"
-                    sh "ls -l /root/jenkins/workspace/lab-blog-pipe/docker-compose.yml"
-
+                    sh "ls -l /root/jenkins/workspace/linode-blog/docker-compose.yml"
+                    echo "SONETING DEY INSICE>>>>>>>>>>??????????????????????????????????????/////////"
                     sh """
                         sed -i '/^  blog-app:/,/image:/s|image: $DOCKER_IMAGE_NAME:.*|image: $DOCKER_IMAGE_NAME:$IMAGE_TAG|' $composeFilePath
                     """
@@ -114,7 +114,7 @@ pipeline {
                     script {
                         def ec2Host = '13.42.24.82'
                         def user = 'ubuntu'
-                        def localFile = '/root/jenkins/workspace/blog-pipe/docker-compose.yml'
+                        def localFile = '/root/jenkins/workspace/linode-blog/docker-compose.yml'
                         def remotePath = '/home/ubuntu/docker-compose.yml'
 
                        echo'<<<<<>>>>>>>>>>>>>>>>>>>>>>NOW ABOUT TO SSH>>>>>>>>>>>>>>>>>>>>'
