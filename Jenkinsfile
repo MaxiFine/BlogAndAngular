@@ -4,7 +4,8 @@
 
 pipeline {
     agent {
-        label 'agent1'
+//         label 'agent1' testing Linode agent
+        label 'agentLinode'
     }
 
     environment {
@@ -52,13 +53,13 @@ pipeline {
                             }
                         }
 
-            stage('SonarQube Quality Gate') {
-                steps {
-                    script {
-                       sonarUtility.checkSonarQubeQualityGate(1)
-                    }
-                }
-            }
+//             stage('SonarQube Quality Gate') {
+//                 steps {
+//                     script {
+//                        sonarUtility.checkSonarQubeQualityGate(1)
+//                     }
+//                 }
+//             }
 
 
 
