@@ -47,7 +47,9 @@ pipeline {
                 // run sonarqube ANALYSIS
             stage('Run Sonarqube') {
                       steps {
-                              withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+//                               withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+//                             testing Linode agent with Sonarqube
+                              withSonarQubeEnv(credentialsId: 'agent-linode-sonar-token', installationName: 'linode-sonarqube') {
                                 sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.java.binaries=target/classes"
                               }
                             }
