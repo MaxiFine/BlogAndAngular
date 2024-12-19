@@ -96,7 +96,10 @@ pipeline {
         stage('Update Docker Compose for Blog-App') {
             steps {
                 script {
-                    def composeFilePath = '/root/jenkins/workspace/lab-blog-pipe/docker-compose.yml'
+                    def composeFilePath = '/root/jenkins/workspace/blog-pipe/docker-compose.yml'
+                    echo "CHCKING FILE PATH>>>>>>>>>>>>>>>>>>>"
+                    sh "ls -l /root/jenkins/workspace/lab-blog-pipe/docker-compose.yml"
+
                     sh """
                         sed -i '/^  blog-app:/,/image:/s|image: $DOCKER_IMAGE_NAME:.*|image: $DOCKER_IMAGE_NAME:$IMAGE_TAG|' $composeFilePath
                     """
