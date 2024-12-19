@@ -21,6 +21,14 @@ pipeline {
 
     }
 
+      stage("CLEAN WORKSPACE"){
+                steps {
+                    script {
+                        cleanWs()
+                    }
+                }
+            }
+
     stages {
         stage('Set Git SHA') {
             steps {
@@ -31,10 +39,6 @@ pipeline {
                 }
             }
         }
-
-        stage("CLEAN WORKSPACE")
-
-
 
         stage('Clean and Package Build') {
             steps {
