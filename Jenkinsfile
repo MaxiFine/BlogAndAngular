@@ -21,15 +21,19 @@ pipeline {
 
     }
 
-      stage("CLEAN WORKSPACE"){
-                steps {
-                    script {
-                        cleanWs()
-                    }
-                }
-            }
+
 
     stages {
+
+         stage("CLEAN WORKSPACE"){
+                        steps {
+                            script {
+                                cleanWs()
+                            }
+                        }
+                    }
+
+
         stage('Set Git SHA') {
             steps {
                 script {
