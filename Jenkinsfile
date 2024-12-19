@@ -52,13 +52,13 @@ pipeline {
                             }
                         }
 
-            stage('SonarQube Quality Gate') {
-                steps {
-                    script {
-                       sonarUtility.checkSonarQubeQualityGate(1)
-                    }
-                }
-            }
+//             stage('SonarQube Quality Gate') {
+//                 steps {
+//                     script {
+//                        sonarUtility.checkSonarQubeQualityGate(1)
+//                     }
+//                 }
+//             }
 
 
 

@@ -26,9 +26,9 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public String createBlog(BlogDto blogDto) {
-      BlogEntity blog = blogMapper.mapToBlogEntity(blogDto);
-       blogRepository.save(blog);
-       return "Blog created Successfully... id is: " + blog.getBlogId();
+        BlogEntity blog = blogMapper.mapToBlogEntity(blogDto);
+        blogRepository.save(blog);
+        return "Blog created Successfully... id is: " + blog.getBlogId();
     }
 
 
@@ -70,7 +70,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public BlogDtoResponse updateBlog(BlogDto dto, String blogId) {
         BlogEntity optionalBlog = blogRepository.findById(blogId)
-                    .orElseThrow(() -> new NotFound404Exception(NOT_FOUND));
+                .orElseThrow(() -> new NotFound404Exception(NOT_FOUND));
         return updaterBlog(dto, optionalBlog);
     }
 
@@ -80,7 +80,7 @@ public class BlogServiceImpl implements BlogService{
         blog.setContent(blogDto.content());
         blog.setImage(blogDto.image());
         blog.setBlogTags(blogDto.blogTags());
-       BlogEntity updatedBlog = blogRepository.save(blog);
+        BlogEntity updatedBlog = blogRepository.save(blog);
         return blogMapper.mapBlogDtoResponse(updatedBlog);
     }
 
