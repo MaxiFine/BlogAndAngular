@@ -186,3 +186,14 @@ COPYING VALUES FROM ENV
                         }
                     }
                 }
+
+
+        WORKSPACE CLEANING
+        //          stage("CLEAN WORKSPACE"){
+        //                         steps {
+        //                             script {
+        //                                 cleanWs()
+        //                             }
+        //                         }
+        //                     }
+
