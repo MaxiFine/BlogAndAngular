@@ -2,13 +2,13 @@ services:
   # Spring boot application Service
   blog-app:
     container_name: jenkins-lab-deploy
-#    image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
-    image: test_build_two:1.0
+    image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
+#    image: test_build_two:1.0   # For local testings
     ports:
       - 8027:8027
     env_file:
       - .env
-    restart: on-failure:1
+    restart: on-failure:2
     networks:
       - blog-app-network
 

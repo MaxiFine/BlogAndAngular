@@ -30,6 +30,6 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-alpine AS runtime
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-#EXPOSE 8027  # not expsing port, WILL USE COMPOSE TO ADD PORT
+# EXPOSE 8027  # not expsing port, WILL USE COMPOSE TO ADD PORT
 # but will compose file to expose port number
 CMD ["java", "-jar", "app.jar"]
