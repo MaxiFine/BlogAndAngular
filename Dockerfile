@@ -16,6 +16,8 @@
 ##COPY --from=build /app/.env ./
 #EXPOSE 8027
 #CMD ["java", "-jar", "app.jar"]
+# the reason for the docker error was that the db
+# was not available on wsl so that's why the error
 
 # NEW BUILDING WITH CLEAN SLATE
 # BUILD STAGE
@@ -28,6 +30,6 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-alpine AS runtime
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-#EXPOSE 8027  # not expsing port,
+#EXPOSE 8027  # not expsing port, WILL USE COMPOSE TO ADD PORT
 # but will compose file to expose port number
 CMD ["java", "-jar", "app.jar"]
