@@ -9,6 +9,12 @@ import { HttpClient } from '@angular/common/http';
 // import { AngularMaterialModule } from './AngularMaterialModule';
 import { MaterialModule } from './AngularMaterialModule';
 
+
+import { Component } from '@angular/core';
+
+import { RouterOutlet } from '@angular/router';
+
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent

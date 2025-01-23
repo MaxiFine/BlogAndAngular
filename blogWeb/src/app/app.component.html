@@ -1,13 +1,34 @@
-<mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar color="primary">
+  <!-- Menu Icon -->
+  <button mat-icon-button aria-label="Menu button">
     <mat-icon>menu</mat-icon>
   </button>
+
+  <!-- Application Title -->
   <span>My App</span>
-  <span class="example-spacer"></span>
-  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+
+  <!-- Spacer to push items to the right -->
+  <span class="spacer"></span>
+
+  <!-- Create New Post Button -->
+  <button mat-button color="accent" routerLink="/create-post">
+    Create New Post
+  </button>
+
+  <!-- Search Icon -->
+  <button mat-icon-button aria-label="Search">
+    <mat-icon>search</mat-icon>
+  </button>
+
+  <!-- Favorite Icon -->
+  <button mat-icon-button aria-label="Favorite">
     <mat-icon>favorite</mat-icon>
   </button>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+
+  <!-- Share Icon -->
+  <button mat-icon-button aria-label="Share">
     <mat-icon>share</mat-icon>
   </button>
 </mat-toolbar>
+
+<router-outlet></router-outlet>
