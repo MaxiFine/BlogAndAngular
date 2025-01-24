@@ -5,9 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 // import { AngularMaterialModule } from './AngularMaterialModule';
-import { MaterialModule } from './AngularMaterialModule';
+import { MaterialModules } from './AngularMaterialModule';
 
 
 import { Component } from '@angular/core';
@@ -15,21 +15,25 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [
-    AppComponent
+  
   ],
   imports: [
     BrowserModule, 
     AppRoutingModule,
     BrowserAnimationsModule, 
-    MaterialModule,
+    MaterialModules,
     FormsModule, 
     ReactiveFormsModule,
-     HttpClient
+    HttpClientModule,
+    AppComponent,
+    CommonModule,
+
   
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: []
 })
 export class AppModule {}

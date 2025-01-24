@@ -1,7 +1,7 @@
 <mat-card class="center-card">
-</mat-card-content>
+<mat-card-content>
     <div>
-        <form [formGroup]="postForm">
+        <form [formGroup]="postForm" >
 
             <mat-form-field appearance="fill">
                 <mat-label>Name</mat-label>
@@ -31,17 +31,17 @@
                 <mat-label>Tags</mat-label>
             
                 <mat-chip-grid #chipGrid aria-label="Enter tags">
-                </mat-chip-row *ngFor="let tag of tags; let i = index" (remove)="remove(tag)">
+                <mat-chip-row *ngFor="let tag of tags; let i = index" (remove)="remove(tag)">
                     {{tag}}
                     <button matChipRemove >
                         <mat-icon>cancel</mat-icon>
                     </button>
-                    </mat-chip-row>
+                </mat-chip-row>
                     <input placeholder="New Tag" 
                     [matChipInputFor]="chipGrid" 
-                    [matChipInputTokenEnd]="add($event)"/>
-                </mat-chip-grid>
-            </mat-form-field>
+                    (matChipInputTokenEnd)="add($event)"/>
+                    </mat-chip-grid>
+                </mat-form-field>
 
             <!-- <mat-form-field class="full-width">
                 <textarea matInput placeholder="Content" formControlName="content"></textarea>
@@ -49,12 +49,12 @@
 
             <!-- <button mat-raised-button color="primary" (click)="createPost()">Create Post</button> -->
             <button mat-raised-button color="primary" style="float: right;" 
-            [disabled]="!postform.valid">Create New Post</button>
-            
+            [disabled]="!postForm.valid">Create New Post</button>
         </form>
+        
     </div>
 
-</mat-card>
 
+</mat-card-content>
 
 </mat-card>
