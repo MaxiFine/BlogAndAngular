@@ -14,7 +14,7 @@ resource "aws_instance" "example" {
 */
 
 # NEW CONFIGS
- provider "aws" {
+provider "aws" {
     region = "eu-west-2"
 }
 
