@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Form, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MaterialModules } from '../../AngularMaterialModule'; 
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-post',
-  imports: [],
+  imports: [ MaterialModules, ReactiveFormsModule, CommonModule ],
   templateUrl: './create-post.component.html',
   styleUrl: './create-post.component.css'
 })
