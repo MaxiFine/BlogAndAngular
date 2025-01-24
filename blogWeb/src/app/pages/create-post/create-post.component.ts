@@ -43,7 +43,7 @@ export class CreatePostComponent {
     event.chipInput!.clear();
   }
 
-  remove(tag: string){
+  remove(tag:any){
     // this.tags.splice(this.tags.indexOf(tag), 1);
     const index = this.tags.indexOf(tag);
 

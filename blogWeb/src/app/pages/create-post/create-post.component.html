@@ -5,31 +5,26 @@
 
             <mat-form-field appearance="fill">
                 <mat-label>Name</mat-label>
-            
-                <input matInput placeholder="Title" formControlName="name">
+                <input matInput formControlName="name">
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>image</mat-label>
-            
-                <input matInput placeholder="image" formControlName="image">
+                <input matInput formControlName="img">
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Content</mat-label>
-            
-                <input matInput rows="5" placeholder="Content" formControlName="content">
+                <input matInput rows="5" formControlName="content">
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Posted By</mat-label>
-            
-                <input matInput placeholder="postedBy" formControlName="postedBy">
+                <input matInput formControlName="postedBy">
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Tags</mat-label>
-            
                 <mat-chip-grid #chipGrid aria-label="Enter tags">
                 <mat-chip-row *ngFor="let tag of tags; let i = index" (remove)="remove(tag)">
                     {{tag}}
@@ -37,17 +32,13 @@
                         <mat-icon>cancel</mat-icon>
                     </button>
                 </mat-chip-row>
+                
                     <input placeholder="New Tag" 
                     [matChipInputFor]="chipGrid" 
                     (matChipInputTokenEnd)="add($event)"/>
                     </mat-chip-grid>
                 </mat-form-field>
 
-            <!-- <mat-form-field class="full-width">
-                <textarea matInput placeholder="Content" formControlName="content"></textarea>
-            </mat-form-field> -->
-
-            <!-- <button mat-raised-button color="primary" (click)="createPost()">Create Post</button> -->
             <button mat-raised-button color="primary" style="float: right;" 
             [disabled]="!postForm.valid">Create New Post</button>
         </form>

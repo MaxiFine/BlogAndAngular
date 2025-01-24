@@ -37,4 +37,9 @@ build/
 target
 .env
 .mvn
-
+.github
+notes.txt
+ci-cd.yml
+buildspec.yml
+appspec.yml
+main.tf

@@ -6,6 +6,7 @@ import { MaterialModules } from './AngularMaterialModule';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MaterialModules],
+  // imports: [MaterialModules],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
