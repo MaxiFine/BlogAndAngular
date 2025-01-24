@@ -63,5 +63,10 @@ public class BlogController {
         }
     }
 
+    @GetMapping("/hello")
+    public ResponseEntity<String> sayHello() {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello, World!");
+    }
+
 }
 
