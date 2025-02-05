@@ -4,8 +4,8 @@
 
 pipeline {
     agent {
-//         label 'agent1' testing Linode agent
-        label 'agentLinode'
+        label 'agent1' // testing Linode agent
+
     }
 
     environment {
