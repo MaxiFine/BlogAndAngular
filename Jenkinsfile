@@ -99,18 +99,18 @@ pipeline {
             }
         }
 
-         stage('Run Docker Container') {
-                    steps {
-                        script {
-                            // Run the Docker container
-                            sh '''
-                                echo "Running Docker container..."
-                                docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:4.0
-                                echo container now running>>>>>>
-                            '''
-                        }
-                    }
-                }
+          stage('Run Docker Container') {
+              steps {
+                  script {
+                      // Run the Docker container
+                      sh """
+                          echo "Running Docker container..."
+                          docker run -d --name jenkins-built-container -p 8027:8027 maxfine22/blog-app:${IMAGE_TAG}
+                          echo "Container now running >>>>>>"
+                      """
+                  }
+              }
+          }
 
 
 //         stage('Deploy to EC2') {
