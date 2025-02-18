@@ -88,9 +88,9 @@ pipeline {
         stage('Update Docker Compose for Blog-App') {
             steps {
                 script {
-                    def composeFilePath = '/root/jenkins/workspace/linode-blog/docker-compose.yml'
+                    def composeFilePath = '/home/jenkins/workspace/blog-pipe/docker-compose.yml'
                     echo "CHCKING FILE PATH>>>>>>>>>>>>>>>>>>>"
-                    sh "ls -l /home/jenkins/workspace/linode-blog/docker-compose.yml"
+                    sh "ls -l /home/jenkins/workspace/blog-pipe/docker-compose.yml"
                     echo "SONETING DEY INSICE>>>>>>>>>>??????????????????????????????????????/////////"
                     sh """
                         sed -i '/^  blog-app:/,/image:/s|image: $DOCKER_IMAGE_NAME:.*|image: $DOCKER_IMAGE_NAME:$IMAGE_TAG|' $composeFilePath
