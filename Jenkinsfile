@@ -90,7 +90,7 @@ pipeline {
                 script {
                     def composeFilePath = '/root/jenkins/workspace/linode-blog/docker-compose.yml'
                     echo "CHCKING FILE PATH>>>>>>>>>>>>>>>>>>>"
-                    sh "ls -l /root/jenkins/workspace/linode-blog/docker-compose.yml"
+                    sh "ls -l /home/jenkins/workspace/linode-blog/docker-compose.yml"
                     echo "SONETING DEY INSICE>>>>>>>>>>??????????????????????????????????????/////////"
                     sh """
                         sed -i '/^  blog-app:/,/image:/s|image: $DOCKER_IMAGE_NAME:.*|image: $DOCKER_IMAGE_NAME:$IMAGE_TAG|' $composeFilePath
@@ -113,36 +113,36 @@ pipeline {
                 }
 
 
-        stage('Deploy to EC2') {
-            steps {
-                sshagent(['blog-lab-ssh']) {
-                    script {
-                        def ec2Host = '13.42.24.82'
-                        def user = 'ubuntu'
-                        def localFile = '/root/jenkins/workspace/linode-blog/docker-compose.yml'
-                        def remotePath = '/home/ubuntu/docker-compose.yml'
-
-                       echo'<<<<<>>>>>>>>>>>>>>>>>>>>>>NOW ABOUT TO SSH>>>>>>>>>>>>>>>>>>>>'
-
-                        // SCP Command
-                        sh """
-                        scp -o StrictHostKeyChecking=no ${localFile} ${user}@${ec2Host}:${remotePath}
-                        """
-                        echo "SSH DONE >>>>>>>>>>>>>>>FILE COPY DONE>>>>>>>>>>"
-                        // SSH Command
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ${user}@${ec2Host} '
-                            cd /home/ubuntu
-                            docker-compose down || true
-                            docker system prune -af --volumes || true
-                            docker-compose pull
-                            docker-compose up -d
-                        '
-                        """
-                    }
-                }
-            }
-        }
+//         stage('Deploy to EC2') {
+//             steps {
+//                 sshagent(['blog-lab-ssh']) {
+//                     script {
+//                         def ec2Host = '13.42.24.82'
+//                         def user = 'ubuntu'
+//                         def localFile = '/home/jenkins/workspace/linode-blog/docker-compose.yml'
+//                         def remotePath = '/home/ubuntu/docker-compose.yml'
+//
+//                        echo'<<<<<>>>>>>>>>>>>>>>>>>>>>>NOW ABOUT TO SSH>>>>>>>>>>>>>>>>>>>>'
+//
+//                         // SCP Command
+//                         sh """
+//                         scp -o StrictHostKeyChecking=no ${localFile} ${user}@${ec2Host}:${remotePath}
+//                         """
+//                         echo "SSH DONE >>>>>>>>>>>>>>>FILE COPY DONE>>>>>>>>>>"
+//                         // SSH Command
+//                         sh """
+//                         ssh -o StrictHostKeyChecking=no ${user}@${ec2Host} '
+//                             cd /home/ubuntu
+//                             docker-compose down || true
+//                             docker system prune -af --volumes || true
+//                             docker-compose pull
+//                             docker-compose up -d
+//                         '
+//                         """
+//                     }
+//                 }
+//             }
+//         }
 
 
         stage('Backup Jenkins Server to S3') {
