@@ -4,6 +4,14 @@ services:
     container_name: jenkins-lab-deploy
     image: maxfine22/blog-app:f5f49d266e47757b324326e441440d7acb132e36
 #    image: local_blog:1.3   # For local testings
+#    deploy:   # enabling resource allocation and limitation
+#      resources:
+#        limits:
+#          cpus: '1.0'
+#          memory: '512'
+#        reservations:
+#          cpus: '0.5'
+#          memory: '256'
     ports:
       - 8027:8027
     env_file:

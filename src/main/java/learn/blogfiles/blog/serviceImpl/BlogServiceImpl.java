@@ -1,4 +1,4 @@
-package learn.blogfiles.blog.service;
+package learn.blogfiles.blog.serviceImpl;
 
 
 import learn.blogfiles.blog.dtos.BlogDto;
@@ -7,6 +7,7 @@ import learn.blogfiles.blog.handlers.NotFound404Exception;
 import learn.blogfiles.blog.mappers.BlogMapper;
 import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.repository.BlogRepository;
+import learn.blogfiles.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BlogServiceImpl implements BlogService{
+public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
     private final BlogMapper blogMapper;
