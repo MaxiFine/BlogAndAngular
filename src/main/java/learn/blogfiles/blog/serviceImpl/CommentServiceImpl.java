@@ -1,4 +1,4 @@
-package learn.blogfiles.blog.service;
+package learn.blogfiles.blog.serviceImpl;
 
 import learn.blogfiles.blog.dtos.CommentDto;
 import learn.blogfiles.blog.dtos.CommentResponse;
@@ -8,13 +8,14 @@ import learn.blogfiles.blog.model.BlogEntity;
 import learn.blogfiles.blog.model.Comment;
 import learn.blogfiles.blog.repository.BlogRepository;
 import learn.blogfiles.blog.repository.CommentRepository;
+import learn.blogfiles.blog.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
     private final BlogRepository blogRepository;
     private final CommentRepository commentRepository;
