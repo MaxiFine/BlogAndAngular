@@ -1,0 +1,121 @@
+<div class="blog-detail-container">
+  <button mat-raised-button class="back-button" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon> Back to Posts
+  </button>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-card *ngIf="!isLoading && blog" class="blog-detail-card">
+    <mat-card-content>
+      <div class="blog-header">
+        <h1 class="blog-title">{{ blog.name }}</h1>
+        
+        <div class="blog-meta-info">
+          <div class="blog-author-date">
+            <div class="meta-item">
+              <mat-icon>person</mat-icon>
+              <span>{{ blog.postedBy }}</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ blog.createdAt | date: 'MMMM d, y' }}</span>
+            </div>
+          </div>
+          
+          <div class="blog-stats">
+            <div class="stat-item">
+              <mat-icon>visibility</mat-icon>
+              <span>{{ blog.viewCount || 0 }} views</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>favorite</mat-icon>
+              <span>{{ blog.likeCounts || 0 }} likes</span>
+            </div>
+          </div>
+        </div>
+
+        <img [src]="blog.image" [alt]="blog.name" class="blog-image" *ngIf="blog.image">
+        
+        <div class="blog-tags" *ngIf="blog.blogTags && blog.blogTags.length > 0">
+          <span class="tag-chip" *ngFor="let tag of blog.blogTags">{{ tag }}</span>
+        </div>
+      </div>
+
+      <div class="blog-content">
+        {{ blog.content }}
+      </div>
+
+      <div class="blog-actions">
+        <button mat-raised-button color="primary" (click)="likePost()">
+          <mat-icon>favorite</mat-icon> Like This Post
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="comments-section" *ngIf="!isLoading && blog">
+    <h2 class="section-title">Comments ({{ comments.length }})</h2>
+
+    <mat-card class="comment-form-card">
+      <mat-card-header>
+        <mat-card-title>Add a Comment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="comment-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Your Name</mat-label>
+            <input matInput formControlName="postedBy" placeholder="Enter your name">
+            <mat-error *ngIf="commentForm.get('postedBy')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Comment</mat-label>
+            <textarea 
+              matInput 
+              formControlName="commentText" 
+              placeholder="Share your thoughts..."
+              rows="4">
+            </textarea>
+            <mat-error *ngIf="commentForm.get('commentText')?.hasError('required')">
+              Comment is required
+            </mat-error>
+            <mat-error *ngIf="commentForm.get('commentText')?.hasError('minlength')">
+              Comment must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="commentForm.reset()">Clear</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">
+              Post Comment
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="comments-list" *ngIf="comments.length > 0">
+      <mat-card class="comment-card" *ngFor="let comment of comments">
+        <div class="comment-header">
+          <div class="comment-author">
+            <mat-icon>account_circle</mat-icon>
+            <span>{{ comment.postedBy }}</span>
+          </div>
+          <span class="comment-date">{{ comment.createdAt | date: 'MMM d, y h:mm a' }}</span>
+        </div>
+        <div class="comment-text">
+          {{ comment.commentText }}
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="no-comments" *ngIf="comments.length === 0">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <p>No comments yet. Be the first to comment!</p>
+    </div>
+  </div>
+</div>
