@@ -1,51 +1,84 @@
-<mat-card class="center-card">
-<mat-card-content>
-    <div>
-        <form [formGroup]="postForm" >
+<div class="create-post-container">
+  <mat-card class="center-card">
+    <mat-card-header>
+      <mat-card-title>Create New Blog Post</mat-card-title>
+      <mat-card-subtitle>Share your thoughts with the world</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <form [formGroup]="postForm" (ngSubmit)="createPost()">
 
-            <mat-form-field appearance="fill">
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="name">
-            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Post Title</mat-label>
+            <input matInput formControlName="name" placeholder="Enter a catchy title">
+            <mat-error *ngIf="postForm.get('name')?.hasError('required')">
+              Title is required
+            </mat-error>
+            <mat-error *ngIf="postForm.get('name')?.hasError('minlength')">
+              Title must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>image</mat-label>
-                <input matInput formControlName="img">
-            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Image URL</mat-label>
+            <input matInput formControlName="img" placeholder="https://example.com/image.jpg">
+            <mat-error *ngIf="postForm.get('img')?.hasError('required')">
+              Image URL is required
+            </mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Content</mat-label>
-                <input matInput rows="5" formControlName="content">
-            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Content</mat-label>
+            <textarea matInput rows="10" formControlName="content" 
+              placeholder="Write your blog content here..."></textarea>
+            <mat-hint>Maximum 5000 characters</mat-hint>
+            <mat-error *ngIf="postForm.get('content')?.hasError('required')">
+              Content is required
+            </mat-error>
+            <mat-error *ngIf="postForm.get('content')?.hasError('maxlength')">
+              Content cannot exceed 5000 characters
+            </mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Posted By</mat-label>
-                <input matInput formControlName="postedBy">
-            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Author Name</mat-label>
+            <input matInput formControlName="postedBy" placeholder="Your name">
+            <mat-error *ngIf="postForm.get('postedBy')?.hasError('required')">
+              Author name is required
+            </mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Tags</mat-label>
-                <mat-chip-grid #chipGrid aria-label="Enter tags">
-                <mat-chip-row *ngFor="let tag of tags; let i = index" (remove)="remove(tag)">
-                    {{tag}}
-                    <button matChipRemove >
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip-row>
-                
-                    <input placeholder="New Tag" 
-                    [matChipInputFor]="chipGrid" 
-                    (matChipInputTokenEnd)="add($event)"/>
-                    </mat-chip-grid>
-                </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Tags</mat-label>
+            <mat-chip-grid #chipGrid aria-label="Enter tags">
+              <mat-chip-row *ngFor="let tag of tags; let i = index" (removed)="remove(tag)">
+                {{tag}}
+                <button matChipRemove type="button">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+              
+              <input placeholder="Add tags (press Enter)" 
+                [matChipInputFor]="chipGrid" 
+                (matChipInputTokenEnd)="add($event)"/>
+            </mat-chip-grid>
+            <mat-hint>Press Enter to add tags</mat-hint>
+          </mat-form-field>
 
-            <button mat-raised-button color="primary" style="float: right;" 
-            [disabled]="!postForm.valid">Create New Post</button>
+          <div class="form-actions">
+            <button mat-button type="button" (click)="postForm.reset(); tags = []" 
+              [disabled]="isSubmitting">
+              Clear
+            </button>
+            <button mat-raised-button color="primary" type="submit" 
+              [disabled]="!postForm.valid || isSubmitting">
+              <mat-icon *ngIf="!isSubmitting">publish</mat-icon>
+              <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+              {{ isSubmitting ? 'Creating...' : 'Create Post' }}
+            </button>
+          </div>
         </form>
-        
-    </div>
-
-
-</mat-card-content>
-
-</mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

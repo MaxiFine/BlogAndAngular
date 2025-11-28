@@ -5,15 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-// import { AngularMaterialModule } from './AngularMaterialModule';
+import { HttpClientModule } from '@angular/common/http';
 import { MaterialModules } from './AngularMaterialModule';
-
-
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+
+import { BlogService } from './services/blog.service';
+import { CommentService } from './services/comment.service';
+
 @NgModule({
   declarations: [
   
@@ -28,10 +26,8 @@ import { CommonModule } from '@angular/common';
     HttpClientModule,
     AppComponent,
     CommonModule,
-
-  
   ],
-  providers: [],
+  providers: [BlogService, CommentService],
   bootstrap: []
 })
 export class AppModule {}

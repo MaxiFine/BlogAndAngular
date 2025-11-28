@@ -1,0 +1,60 @@
+<div class="blog-container">
+  <div class="blog-header">
+    <h1>Latest Blog Posts</h1>
+    <p>Discover amazing stories and insights</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && blogs.length === 0" class="no-blogs">
+    <mat-icon>article</mat-icon>
+    <h2>No blog posts yet</h2>
+    <p>Be the first to create a post!</p>
+    <button mat-raised-button color="primary" routerLink="/create-post">
+      Create Your First Post
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && blogs.length > 0" class="blog-grid">
+    <mat-card *ngFor="let blog of blogs" class="blog-card" (click)="viewBlogDetails(blog.id)">
+      <div class="blog-image" [style.background-image]="'url(' + blog.image + ')'"></div>
+      
+      <mat-card-content class="blog-content">
+        <h2 class="blog-title">{{ blog.name }}</h2>
+        
+        <div class="blog-meta">
+          <span><mat-icon inline>person</mat-icon> {{ blog.postedBy }}</span>
+          <span><mat-icon inline>calendar_today</mat-icon> {{ blog.createdAt | date: 'MMM d, y' }}</span>
+        </div>
+
+        <p class="blog-description">{{ getTruncatedContent(blog.content) }}</p>
+
+        <div class="blog-tags" *ngIf="blog.blogTags && blog.blogTags.length > 0">
+          <span class="blog-tag" *ngFor="let tag of blog.blogTags">{{ tag }}</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="blog-actions">
+        <div class="stats">
+          <span><mat-icon inline>visibility</mat-icon> {{ blog.viewCount || 0 }}</span>
+          <span><mat-icon inline>favorite</mat-icon> {{ blog.likeCounts || 0 }}</span>
+        </div>
+        <button mat-icon-button color="primary" (click)="likePost(blog.id, $event)" matTooltip="Like this post">
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <mat-paginator 
+    *ngIf="!isLoading && blogs.length > 0"
+    [length]="totalElements"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage"
+    [pageSizeOptions]="[6, 9, 12, 18]"
+    (page)="onPageChange($event.pageIndex)"
+    class="pagination-container">
+  </mat-paginator>
+</div>
