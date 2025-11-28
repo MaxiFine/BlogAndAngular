@@ -1,3 +1,19 @@
 .example-spacer {
-    flex: 1 1 auto;
-  }
+  flex: 1 1 auto;
+}
+
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+mat-toolbar button {
+  margin: 0 5px;
+}
+
+mat-toolbar span {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
