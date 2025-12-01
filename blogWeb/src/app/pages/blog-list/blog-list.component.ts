@@ -33,14 +33,14 @@ export class BlogListComponent implements OnInit {
   loadBlogs(): void {
     this.isLoading = true;
     this.blogService.getAllBlogs(this.currentPage, this.pageSize).subscribe({
-      next: (response: PageResponse<BlogPost>) => {
+      next: (response: any) => {
         this.blogs = response.content;
-        this.totalPages = response.totalPages;
-        this.totalElements = response.totalElements;
-        this.currentPage = response.number;
+        this.totalPages = response.totalPages || 0;
+        this.totalElements = response.totalElements || 0;
+        this.currentPage = response.number || 0;
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading blogs:', error);
         this.snackBar.open('Failed to load blogs', 'Close', { duration: 3000 });
         this.isLoading = false;
@@ -58,11 +58,11 @@ export class BlogListComponent implements OnInit {
     event.stopPropagation();
     if (postId) {
       this.blogService.likePost(postId).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.snackBar.open('Post liked!', 'Close', { duration: 2000 });
           this.loadBlogs(); // Reload to get updated like count
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error liking post:', error);
           this.snackBar.open('Failed to like post', 'Close', { duration: 3000 });
         }

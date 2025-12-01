@@ -10,7 +10,7 @@ export interface Comment {
 }
 
 export interface CommentResponse {
-  id: string;
+  commentId: string;
   commentText: string;
   createdAt: string;
   postedBy: string;
@@ -26,9 +26,5 @@ export class CommentService {
 
   createComment(postId: string, comment: Comment): Observable<CommentResponse> {
     return this.http.post<CommentResponse>(`${this.apiUrl}/${postId}`, comment);
-  }
-
-  getCommentsByPostId(postId: string): Observable<CommentResponse[]> {
-    return this.http.get<CommentResponse[]>(`${this.apiUrl}/get-comments/${postId}`);
   }
 }

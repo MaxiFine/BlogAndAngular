@@ -40,7 +40,6 @@ export class BlogDetailComponent implements OnInit {
 
     if (this.blogId) {
       this.loadBlogDetails();
-      this.loadComments();
     }
   }
 
@@ -58,19 +57,6 @@ export class BlogDetailComponent implements OnInit {
         this.snackBar.open('Failed to load blog details', 'Close', { duration: 3000 });
         this.isLoading = false;
         this.router.navigate(['/posts']);
-      }
-    });
-  }
-
-  loadComments(): void {
-    if (!this.blogId) return;
-    
-    this.commentService.getCommentsByPostId(this.blogId).subscribe({
-      next: (response: CommentResponse[]) => {
-        this.comments = response;
-      },
-      error: (error: any) => {
-        console.error('Error loading comments:', error);
       }
     });
   }
@@ -105,7 +91,8 @@ export class BlogDetailComponent implements OnInit {
       next: (response: CommentResponse) => {
         this.snackBar.open('Comment added successfully!', 'Close', { duration: 2000 });
         this.commentForm.reset();
-        this.loadComments(); // Reload comments
+        // Add the new comment to the list
+        this.comments.push(response);
       },
       error: (error: any) => {
         console.error('Error adding comment:', error);

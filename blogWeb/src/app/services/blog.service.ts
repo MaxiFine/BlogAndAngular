@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface BlogPost {
-  id?: string;
+  blogId?: string;
   name: string;
   content: string;
   postedBy: string;
@@ -11,23 +11,14 @@ export interface BlogPost {
   createdAt?: string;
   blogTags?: string[];
   likeCounts?: number;
-  viewCount?: number;
+  viewCounts?: number;
+  published?: boolean;
 }
 
 export interface PageResponse<T> {
   content: T[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-  };
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  first: boolean;
-  size: number;
-  number: number;
-  numberOfElements: number;
-  empty: boolean;
+  status?: string;
+  message?: string;
 }
 
 @Injectable({
@@ -42,11 +33,11 @@ export class BlogService {
     return this.http.post<string>(`${this.apiUrl}/post`, blogData, { responseType: 'text' as 'json' });
   }
 
-  getAllBlogs(page: number = 0, size: number = 10): Observable<PageResponse<BlogPost>> {
+  getAllBlogs(page: number = 0, size: number = 10): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<PageResponse<BlogPost>>(`${this.apiUrl}/all-posts`, { params });
+    return this.http.get<any>(`${this.apiUrl}/all-posts`, { params });
   }
 
   getBlogDetails(blogId: string): Observable<BlogPost> {
