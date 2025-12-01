@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+dist
+.angular
+.git
+.gitignore
+README.md
+.editorconfig
+.vscode
+*.md
+.DS_Store
+Thumbs.db
