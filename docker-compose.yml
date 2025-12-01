@@ -13,9 +13,24 @@ services:
 #          cpus: '0.5'
 #          memory: '256'
     ports:
-      - 8027:8027
+      - 8080:8080
     env_file:
       - .env
+    restart: on-failure:2
+    networks:
+      - blog-app-network
+
+  # Angular frontend Service
+  blog-frontend:
+    container_name: blog-frontend
+    build:
+      context: ./blogWeb
+      dockerfile: Dockerfile
+    image: maxfine22/blog-frontend:latest
+    ports:
+      - 4200:80
+    depends_on:
+      - blog-app
     restart: on-failure:2
     networks:
       - blog-app-network
