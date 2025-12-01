@@ -1,38 +1,28 @@
-# Stage 1: Build the application
-#FROM maven:3-eclipse-temurin-17-alpine AS build
-#WORKDIR /app
-#COPY . .
-##COPY pom.xml /app
-##COPY src /app
-##COPY .env /app
-##RUN mvn dependency:go-offline
-#RUN mvn clean package -DskipTests
-#
-#
-## Stage 2: Set up the runtime environment
-#FROM openjdk:17-alpine AS runtime
-#WORKDIR /app
-#COPY --from=build /app/target/*.jar app.jar
-##COPY --from=build /app/.env ./
-#EXPOSE 8027
-#CMD ["java", "-jar", "app.jar"]
-# the reason for the docker error was that the db
-# was not available on wsl so that's why the error
-
-# NEW BUILDING WITH CLEAN SLATE
-# BUILD STAGE
-FROM maven:3-eclipse-temurin-17-alpine AS build
+# ---- BUILD STAGE ----
+FROM maven:3-eclipse-temurin-21-alpine AS build
 WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
 
-# RUNTIME STAGE
-FROM openjdk:17-alpine AS runtime
+# Only copy dependency descriptors first (for better caching)
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+# Now copy the rest of the source
+COPY src ./src
+
+RUN mvn -B clean package -DskipTests
+
+# ---- RUNTIME STAGE ----
+FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
+
+# Copy the built JAR
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8027 
-STOPSIGNAL SIGKILL
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
-# but will compose file to expose port number
-ENTRYPOINT [ "java" ]
-CMD ["java", "-jar", "app.jar"]
+
+# Expose your application port
+EXPOSE 8027
+
+# A correct HEALTHCHECK (example)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:8027/actuator/health || exit 1
+
+ENTRYPOINT ["java","-jar","/app/app.jar"]
