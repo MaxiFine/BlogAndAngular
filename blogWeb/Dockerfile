@@ -1,6 +1,11 @@
 # ---- BUILD STAGE ----
 FROM node:18-alpine AS build
 
+# Watch for app source changes
+# RUN npm run build:prod -- --watch
+
+RUN npm install -g nodemon
+
 WORKDIR /app
 
 # Copy package files
