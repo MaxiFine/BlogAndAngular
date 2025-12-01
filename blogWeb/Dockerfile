@@ -13,7 +13,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Build the Angular application for production
-RUN npm run build --prod
+RUN npm run build:prod
 
 # ---- RUNTIME STAGE ----
 FROM nginx:alpine AS runtime
