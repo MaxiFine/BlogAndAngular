@@ -18,7 +18,7 @@
   </div>
 
   <div *ngIf="!isLoading && blogs.length > 0" class="blog-grid">
-    <mat-card *ngFor="let blog of blogs" class="blog-card" (click)="viewBlogDetails(blog.id)">
+    <mat-card *ngFor="let blog of blogs" class="blog-card" (click)="viewBlogDetails(blog.blogId)">
       <div class="blog-image" [style.background-image]="'url(' + blog.image + ')'"></div>
       
       <mat-card-content class="blog-content">
@@ -38,10 +38,10 @@
 
       <mat-card-actions class="blog-actions">
         <div class="stats">
-          <span><mat-icon inline>visibility</mat-icon> {{ blog.viewCount || 0 }}</span>
+          <span><mat-icon inline>visibility</mat-icon> {{ blog.viewCounts || 0 }}</span>
           <span><mat-icon inline>favorite</mat-icon> {{ blog.likeCounts || 0 }}</span>
         </div>
-        <button mat-icon-button color="primary" (click)="likePost(blog.id, $event)" matTooltip="Like this post">
+        <button mat-icon-button color="primary" (click)="likePost(blog.blogId, $event)" matTooltip="Like this post">
           <mat-icon>favorite_border</mat-icon>
         </button>
       </mat-card-actions>
